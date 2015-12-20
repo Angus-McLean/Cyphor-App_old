@@ -1,0 +1,22 @@
+.style-4 input {
+  padding: 10px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
+  transition: border 0.3s;
+}
+.style-4 input:focus,
+.style-4 input.focus {
+  border-bottom: solid 2px #969696;
+}
+
+input {
+  font-family: sans-serif;
+  font-size: 18px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  background-color: transparent;
+}
+input:focus {
+  outline: none;
+}

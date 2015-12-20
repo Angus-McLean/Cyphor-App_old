@@ -1,0 +1,62 @@
+.style-4 input {
+  padding: 10px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
+  transition: border 0.3s;
+}
+.style-4 input:focus,
+.style-4 input.focus {
+  border-bottom: solid 2px #969696;
+}
+
+input {
+  font-family: sans-serif;
+  font-size: 18px;
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  background-color: transparent;
+}
+input:focus {
+  outline: none;
+}
+
+.float-bottom {
+  position: absolute; 
+  bottom: 15px;
+  left: 35%;
+  text-align: center
+}
+
+.list-group { 
+  text-align: left;
+}
+
+div .list-group-item {
+  background:rgba(0,0,0,0.5);
+}
+
+div .list-group-item:hover {
+  background:rgba(66,220,163,0.5);
+}
+
+#list-header {
+  background:rgba(0,0,0,0.8);
+}
+
+.icon-container {
+  width:50%; float:right;
+  text-align:center;
+}
+
+div.icon-container i {
+  cursor: pointer;
+}
+
+div.icon-container .channelactive {
+  color:rgba(66,220,163,1);
+}
+
+div.icon-container .channelinactive {
+  color:rgba(255,0,0,1);
+}

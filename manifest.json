@@ -1,0 +1,47 @@
+//manifest.json
+
+{
+	"name": "CryptoLayer",
+	"description": "Bringing seamless information privacy to all your messaging applications",
+	"version": "0.0.0.1",
+	"manifest_version": 2,
+
+	"icons": {
+		"128": "test_icon.png"
+	},
+	"background": {
+		"persistent": true,
+		"scripts": ["application/messaging/background/background.dispatcher.js","application/background/main/channels.background.js","application/background/main/localstorage.background.js","application/background/main/messages.background.js"]
+	},
+	"content_scripts": [
+		{
+			"matches": ["http://*/*", "https://*/*"],
+			"js": ["application/messaging/content/content.dispatcher.js", "application/content-scripts/main/handleModels.content.js", "application/content-scripts/main/domchange.content.js", "application/content-scripts/main/keycapture.content.js", "application/content-scripts/channels/buildchannels.content.js","application/content-scripts/channels/crudchannels.content.js","application/content-scripts/channels/walkDOM.content.js","application/content-scripts/textmanipulation/crypto_aes.content.js","application/content-scripts/textmanipulation/decrypt.content.js","application/content-scripts/textmanipulation/encrypt.content.js","application/content-scripts/textmanipulation/replacetext.content.js","application/content-scripts/main/pageinit.content.js"]
+		}
+	],
+	"permissions": [
+		"tabs", "http://*/*", "activeTab", "storage"
+	],
+	"commands": {
+		"encryptSelection": {
+			"suggested_key": {
+				"default": "Alt+A",
+				"mac": "Command+Shift+Y" 
+			},
+			"description" : "test"
+		},
+		"decryptSelection": {
+			"suggested_key": {
+				"default": "Alt+D",
+				"windows": "Alt+D",
+				"mac": "Alt+D"
+			},
+			"description" : "test"
+		}
+	},
+	"browser_action": {
+		"default_title": "CryptoLayer!",
+		"default_popup": "public/modules/index.html"
+	},
+	"options_page" : "public/html/options.html"
+}

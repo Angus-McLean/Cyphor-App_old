@@ -1,0 +1,19 @@
+<div id="list-header" class="list-group-item row" ng-click="isCollapsed = !isCollapsed">
+    <div class="col-xs-6"> {{ hostname }} </div>
+    <div class="col-xs-3"></div>
+    <div class="col-xs-3"> {{ channelGroup.length }} channels</div>
+</div>    
+<div ng-hide="isCollapsed">                           
+	<div ng-repeat="channel in channelGroup" class="list-group-item row" id="channel._id">
+		<div class="col-xs-4">{{ channel.channel_name }}</div>
+		<div class="col-xs-6">{{ channel.settings.allowed_users.username }}</div>
+		<div class="col-xs-2">
+			<div class="icon-container">
+				<i class="fa fa-cog"></i>
+			</div>
+			<div class="icon-container">
+				<i class="" ng-class="{'fa fa-lock channelactive': channel.active, 'fa fa-unlock channelinactive' : !channel.active}" ng-click="toggleChannel(channel)"></i>
+			</div>
+		</div>
+	</div>
+</div>
