@@ -5,10 +5,10 @@
 		$rootScope.Cyphor = $rootScope.Cyphor || {};
 
 		chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-			console.log('request.method : '+request.method);
-			if(request.method == 'updateModel' && request.value){
+			console.log('request.action : '+request.action);
+			if(request.action == 'updateModel' && request.value){
 				sendResponse({result : updateModel(request.keys, request.value)})
-			} else if(request.method == 'getModel'){
+			} else if(request.action == 'getModel'){
 				sendResponse({result : getModel(request.keys)})
 			} 
 		});
@@ -56,7 +56,7 @@
 
 		function postModel (keys, value, callback) {
 			var messageObj = {
-				method : 'updateModel',
+				action : 'updateModel',
 				keys : keys,
 				value : value
 			};
@@ -67,7 +67,7 @@
 
 		function fetchModel (keys, callback) {
 			var messageObj = {
-				method : 'getModel',
+				action : 'getModel',
 				keys : keys
 			};
 			chromeMessage.sendMessage(messageObj, function (chrome_resp) {
@@ -81,7 +81,7 @@
 		function syncPost (keys, callback) {
 			var value = getModel(keys);
 			var messageObj = {
-				method : 'updateModel',
+				action : 'updateModel',
 				keys : keys,
 				value : value
 			};
@@ -100,6 +100,6 @@
 		};
 	};
 
-	var module =  angular.module(ApplicationConfiguration.applicationModuleName || 'cryptolayer');
+	var module =  angular.module(ApplicationConfiguration.applicationModuleName);
 	module.factory('CyphorModels', CyphorModels);
 })();

@@ -1,31 +1,43 @@
 (function() {
 
-	angular.module('channels', ['channels.directive.channelGroup']).controller('channelsPageCtrl', ['$scope', '$http', '$rootScope', '$log', 'chromeMessage', 'CyphorModels',
+	angular.module('channels')
+	.controller('channelsPageCtrl', ['$scope', '$http', '$rootScope', '$log', 'chromeMessage', 'CyphorModels',
 		function($scope, $http, $rootScope, $log, chromeMessage, CyphorModels) {
 
 			$log.info('loaded channelsPageCtrl');
 
-			CyphorModels.fetchModel();
+			//CyphorModels.fetchModel();
 
-			$scope.channels = $rootScope.Cyphor.channels;
-			$log.info('controller channels : ', $scope.channels);
-			window.scope = $scope;
+			//$scope.channels = $rootScope.Cyphor.channels;
+			//$log.info('controller channels : ', $scope.channels);
+			window.channelScope = $scope;
 			// load channels for active tab
 			chromeMessage.getActiveTab(function (chromeTabResp) {
 				var active_url = chromeTabResp[0].url.match(/(https?|ftp):\/\/[A-z0-9_\-.]+/)
-				var host = active_url[0].match(/[A-z0-9_\-.]+/);
+				var host;
+				if(Array.isArray(active_url)){
+					host = active_url[0].match(/[A-z0-9_\-.]+/);
+				}
+				
 
 				$scope.activeHost = host;
 
-				// var messageObj = {
-				// 	method: "loadChannels",
-				// 	origin_url: active_url
-				// };
-				// chromeMessage.sendMessage(messageObj, function (chrome_response) {
-				// 	$log.info('loaded channelsPageCtrl', chrome_response);
-				// 	$scope.channels = chrome_response.response;
-				// });
 			});
+
+			$scope.grouppedChannels = {};
+
+			$scope.groupChannels = function (channels) {
+				
+				if(Array.isArray(channels)){
+					channels.forEach(function (chan) {
+						if($scope.grouppedChannels[chan.origin_url]){
+							$scope.grouppedChannels[chan.origin_url].push(chan);
+						} else {
+							$scope.grouppedChannels[chan.origin_url] = [chan];
+						}
+					});
+				}
+			}
 
 			$scope.filterHostNames = function (hostNameObj) {
 				$log.info('filterHostNames function : ', hostNameObj);
@@ -34,12 +46,12 @@
 
 			$scope.saveNewChannel = function () {
 				$log.info('triggered saveNewChannel');
-				chromeMessage.messageActiveTab({method:'savechannel'}, function(resp){
+				chromeMessage.messageActiveTab({action:'savechannel'}, function(resp){
 					console.log(resp);
 				});
 			}
 
 		}
-	]);
+	])
 
 })();

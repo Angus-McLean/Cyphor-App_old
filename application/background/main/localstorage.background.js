@@ -1,5 +1,6 @@
 //localstorage.background.js
-console.log('loaded localstorage.background.js');
+//console.log('loaded localstorage.background.js');
+
 var Cyphor = {}
 
 
@@ -53,7 +54,7 @@ function getModel (keys) {
 
 function postModel (keys, value, callback) {
 	var messageObj = {
-		method : 'updateModel',
+		action : 'updateModel',
 		keys : keys,
 		value : value
 	};
@@ -68,7 +69,7 @@ function postModel (keys, value, callback) {
 
 function fetchModel (keys, callback) {
 	var messageObj = {
-		method : 'getModel',
+		action : 'getModel',
 		keys : keys
 	};
 	chrome.runtime.sendMessage(null, messageObj, null, function (chrome_resp) {

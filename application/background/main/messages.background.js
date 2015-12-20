@@ -1,5 +1,5 @@
 //messages.background.js
-console.log('loaded messages.background.js');
+//console.log('loaded messages.background.js');
 
 function saveMessageObj(request, sender, sendResponse) {
 	

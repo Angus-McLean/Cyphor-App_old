@@ -14,7 +14,7 @@ $('.navbar-collapse ul li a').click(function() {
 
 $('#savechannel').click(function() {
     if($scope.user !== null){
-        passMessageToActiveTab({method:'savechannel'}, function(resp){
+        passMessageToActiveTab({action:'savechannel'}, function(resp){
             console.log(resp)
         });
     } else {
@@ -23,7 +23,7 @@ $('#savechannel').click(function() {
 });
 
 $('#viewchannels').click(function() {
-    passMessageToActiveTab({method:'viewchannels'}, function(resp){
+    passMessageToActiveTab({action:'viewchannels'}, function(resp){
         console.log(resp);
     });
     document.getElementsByTagName('html')[0].innerHTML = JSON.stringify(channels)

@@ -11,12 +11,38 @@
 	},
 	"background": {
 		"persistent": true,
-		"scripts": ["application/messaging/background/background.dispatcher.js","application/background/main/channels.background.js","application/background/main/localstorage.background.js","application/background/main/messages.background.js"]
+		"scripts": [
+			"application/messaging/background/background.dispatcher.js",
+			"application/background/main/channels.background.js",
+			"application/background/main/localstorage.background.js",
+			"application/background/binder/lib/jsRouter.js",
+			"application/background/binder/lib/jsDataStore.js",
+			"application/background/binder/CyphorDB.js",
+			"application/background/binder/CyphorRouter.js",
+			"application/background/main/messages.background.js",
+			"application/background/onload.background.js"
+		]
 	},
 	"content_scripts": [
 		{
 			"matches": ["http://*/*", "https://*/*"],
-			"js": ["application/messaging/content/content.dispatcher.js", "application/content-scripts/main/handleModels.content.js", "application/content-scripts/main/domchange.content.js", "application/content-scripts/main/keycapture.content.js", "application/content-scripts/channels/buildchannels.content.js","application/content-scripts/channels/crudchannels.content.js","application/content-scripts/channels/walkDOM.content.js","application/content-scripts/textmanipulation/crypto_aes.content.js","application/content-scripts/textmanipulation/decrypt.content.js","application/content-scripts/textmanipulation/encrypt.content.js","application/content-scripts/textmanipulation/replacetext.content.js","application/content-scripts/main/pageinit.content.js"]
+			"js": [
+				"application/lib/jsDataStore.js",
+				"application/lib/jsRouter.js",
+				"application/content-scripts/binder/cyphorRouter.content.js",
+				"application/messaging/content/content.dispatcher.js",
+				"application/content-scripts/main/handleModels.content.js",
+				"application/content-scripts/main/domchange.content.js",
+				"application/content-scripts/main/keycapture.content.js",
+				"application/content-scripts/channels/buildchannels.content.js",
+				"application/content-scripts/channels/crudchannels.content.js",
+				"application/content-scripts/channels/walkDOM.content.js",
+				"application/content-scripts/textmanipulation/crypto_aes.content.js",
+				"application/content-scripts/textmanipulation/decrypt.content.js",
+				"application/content-scripts/textmanipulation/encrypt.content.js",
+				"application/content-scripts/textmanipulation/replacetext.content.js",
+				"application/content-scripts/main/pageinit.content.js"
+			]
 		}
 	],
 	"permissions": [

@@ -39,7 +39,7 @@ function getModel (keys) {
 
 function postModel (keys, value, callback) {
 	var messageObj = {
-		method : 'updateModel',
+		action : 'updateModel',
 		keys : keys,
 		value : value
 	};
@@ -49,7 +49,7 @@ function postModel (keys, value, callback) {
 
 function fetchModel (keys, callback) {
 	var messageObj = {
-		method : 'getModel',
+		action : 'getModel',
 		keys : keys
 	};
 	chrome.runtime.sendMessage(messageObj, function (chrome_resp) {

@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'cryptolayer';
-	var applicationModuleVendorDependencies = ['ui.bootstrap', 'ngAnimate'];
+	var applicationModuleVendorDependencies = [];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

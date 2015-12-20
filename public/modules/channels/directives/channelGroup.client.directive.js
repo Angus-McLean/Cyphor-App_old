@@ -15,14 +15,11 @@
 				$scope.toggleChannel = function(channelObj){
 					$log.info('toggled channel : ',channelObj);
 					channelObj.active = !channelObj.active;
-					CyphorModels.syncPost(['channels', channelObj.origin_url]);
+					//CyphorModels.syncPost(['channels', channelObj.origin_url]);
 				}
 			}
 		};
 	};
 
-	angular.module('channels.directive.channelGroup', ['ui.bootstrap']).directive('channelGroup', channelGroup);
-	console.log('in channels function');
+	angular.module('channels').directive('channelGroup', channelGroup);
 })();
-
-console.log('loaded channels directive')

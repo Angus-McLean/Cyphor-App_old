@@ -1,5 +1,5 @@
 //channels.background.js
-console.log('loaded channels.background.js');
+//console.log('loaded channels.background.js');
 
 function saveChannelObj (request, sender, sendResponse) {
 

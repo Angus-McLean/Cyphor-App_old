@@ -1,7 +1,6 @@
 (function () {
-	var cryptolayer = angular.module('cryptolayer', []);
-
-	cryptolayer.controller('MainCtrl', ["$scope", '$log', '$http', '$rootScope', 'CyphorModels', function ($scope, $log, $http, $rootScope, CyphorModels){
+	var cryptolayer = angular.module('core')
+		.controller('MainCtrl', ["$scope", '$log', '$http', '$rootScope', 'CyphorModels', function ($scope, $log, $http, $rootScope, CyphorModels){
 
 		// Initialize $rootScope.Cyphor
 		$scope.CyphorModels = CyphorModels;
@@ -27,5 +26,6 @@
 			// };
 			$log.info('loaded user : '+JSON.stringify(response.data));
 		});
-	}])
+	}]);
+	console.log('registered MainCtrl to core')
 })();

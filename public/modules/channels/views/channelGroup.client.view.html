@@ -3,16 +3,17 @@
     <div class="col-xs-3"></div>
     <div class="col-xs-3"> {{ channelGroup.length }} channels</div>
 </div>    
-<div ng-hide="isCollapsed">                           
-	<div ng-repeat="channel in channelGroup" class="list-group-item row" id="channel._id">
+<div ng-hide="isCollapsed">
+
+	<div ng-repeat="channel in channelGroup" class="list-group-item row" id="channel._id" bind-up="/binder/channels/{{channel._id}} : {{ channel }}">
 		<div class="col-xs-4">{{ channel.channel_name }}</div>
 		<div class="col-xs-6">{{ channel.settings.allowed_users.username }}</div>
 		<div class="col-xs-2">
 			<div class="icon-container">
-				<i class="fa fa-cog"></i>
+				<i class="fa fa-cog" ng-click="open(channel)"></i>
 			</div>
 			<div class="icon-container">
-				<i class="" ng-class="{'fa fa-lock channelactive': channel.active, 'fa fa-unlock channelinactive' : !channel.active}" ng-click="toggleChannel(channel)"></i>
+				<i class="" ng-class="{'fa fa-lock channelactive': channel.active, 'fa fa-unlock channelinactive' : !channel.active}" ng-click="channel.active = !channel.active"></i>
 			</div>
 		</div>
 	</div>

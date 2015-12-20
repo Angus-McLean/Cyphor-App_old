@@ -14,7 +14,7 @@ function save_options() {
     }, 750);
   });
 
-  chrome.runtime.sendMessage({method: "updateLocalStorage", key : "auto_decrypt", value : auto_decrypt}, function(response) {
+  chrome.runtime.sendMessage({action: "updateLocalStorage", key : "auto_decrypt", value : auto_decrypt}, function(response) {
     console.log(response);
   });
 

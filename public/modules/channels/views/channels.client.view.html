@@ -1,9 +1,11 @@
 <!-- Intro Header -->
 <div ng-app='channels' ng-controller='channelsPageCtrl'>
+
     <header class="intro">
         <link href="/public/modules/channels/css/channels.client.styles.css" rel="stylesheet">
         <div class="intro-body">
             <div class="container">
+
                 <div class="row">
                     <div class="col-xs-8">
                         <div class="form-group style-4">
@@ -15,89 +17,13 @@
                     <div class="col-xs-2"></div>
                     <div class="col-xs-8">
                     
-                        <div class="list-group" id="channelstable">
+                        <div class="list-group" id="channelstable" bind-down="/channels/me | groupChannels">
 
-                        <div ng-repeat="(hostname, channelGroup) in Cyphor.channels" id="channelGroup_{{ $index }}">
+                            <div ng-repeat="(hostname, channelGroup) in grouppedChannels" id="channelGroup_{{ $index }}">
 
-                            <div data-channel-group="channelGroup" hostname="hostname">
-                                {{ $index }}
+                                <div ng-include="'channels/views/channelGroup.client.view.html'"></div>
+
                             </div>
-
-                        </div>
-
-                            
-
-<!--                             <div id="list-header" class="list-group-item row">
-                                <div class="col-xs-4">Name</div>
-                                <div class="col-xs-6">Recipients</div>
-                                <div class="col-xs-2">Status</div>
-                            </div>
-
-                            <div class="list-group-item row" ng-repeat="channel in Cyphor.channels track by $index" id="channel_{{ $index }}">
-                                <div id="list-header" class="list-group-item row">
-                                    {{ channel.origin_url
-                                </div>                                
-
-
-                                <div class="col-xs-4">{{ channel.channel_name }}</div>
-                                <div class="col-xs-6">{{ channel.settings.allowed_users.username }}</div>
-                                <div class="col-xs-2" style="display:inline-block;">
-                                    <div class="icon-container">
-                                        <i class="fa fa-cog"></i>
-                                    </div>
-                                    <div class="icon-container">
-                                        <i class="" ng-class="{'fa fa-lock channelactive': channel.active, 'fa fa-unlock channelinactive' : !channel.active}" ng-click="toggleChannel(channel)"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
- -->
-<!-- 
-                         <div class="list-group" id="channelstable">
-                            <uib-accordion id="list-header" close-others="oneAtATime">
-                                <uib-accordion-group ng-repeat="host in channels track by $index" heading="{{ hostname + ' - ' + host.length }}">
-                                    <div ng-repeat="channel in host" id="channel_{{ channel._id }}">
-                                        <div class="col-xs-4">{{ channel.channel_name }}</div>
-                                        <div class="col-xs-6">{{ channel.settings.allowed_users.username }}</div>
-                                        <div class="col-xs-2">
-                                            <div class="icon-container">
-                                                <i class="fa fa-cog"></i>
-                                            </div>
-                                            <div class="icon-container">
-                                                <i class="" ng-class="{'fa fa-lock channelactive': channel.active, 'fa fa-unlock channelinactive' : !channel.active}" ng-click="toggleChannel(channel)"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </uib-accordion-group>
-                            </uib-accordion>
-                        </div>
-
-                            <uib-accordion close-others="oneAtATime">
-                                <uib-accordion-group heading="Static Header, initially expanded" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
-                                    This content is straight in the template.
-                                </uib-accordion-group>
-                                <uib-accordion-group heading="{{group.title}}" ng-repeat="group in groups">
-                                        {{group.content}}
-                                </uib-accordion-group>
-                                <uib-accordion-group heading="Dynamic Body Content">
-                                    <p>The body of the uib-accordion group grows to fit the contents</p>
-                                    <button type="button" class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
-                                    <div ng-repeat="item in items">{{item}}</div>
-                                </uib-accordion-group>
-                                <uib-accordion-group heading="Custom template" template-url="group-template.html">
-                                    Hello
-                                </uib-accordion-group>
-                                <uib-accordion-group heading="Delete account" panel-class="panel-danger">
-                                    <p>Please, to delete your account, click the button below</p>
-                                    <button class="btn btn-danger">Delete</button>
-                                </uib-accordion-group>
-                                <uib-accordion-group is-open="status.open">
-                                    <uib-accordion-heading>
-                                        I can have markup, too! <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                                    </uib-accordion-heading>
-                                    This is just some content to illustrate fancy headings.
-                                </uib-accordion-group>
-                            </uib-accordion> -->
                     </div>
                 </div>
             </div>
