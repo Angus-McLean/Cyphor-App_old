@@ -1,8 +1,8 @@
 (function() {
 
 	angular.module('channels')
-	.controller('channelsPageCtrl', ['$scope', '$http', '$rootScope', '$log', 'chromeMessage', 'CyphorModels',
-		function($scope, $http, $rootScope, $log, chromeMessage, CyphorModels) {
+	.controller('channelsPageCtrl', ['$scope', '$http', '$rootScope', '$log', 'chromeMessage', 'CyphorModels', '$uibModal',
+		function($scope, $http, $rootScope, $log, chromeMessage, CyphorModels, $uibModal) {
 
 			$log.info('loaded channelsPageCtrl');
 
@@ -51,7 +51,33 @@
 				});
 			}
 
+			$scope.open = function (channelObj) {
+				console.log('opening channel ', channelObj);
+				var modalInstance = $uibModal.open({
+					animation: true,
+					templateUrl: '/public/modules/channels/views/channelConfig.client.view.html',
+					controller: 'ModalInstanceController',
+					size: 'lg',
+					resolve: {
+						channel: function() {
+							return channelObj;
+						}
+					}
+				});
+			};
+
 		}
 	])
+	// Controller used for the modal instance
+	.controller('ModalInstanceController', function($scope, $uibModalInstance, channel) {
+
+		$scope.title = "Channel Configuration";
+		$scope.channel = channel;
+
+		$scope.close = function() {
+			$uibModalInstance.close();
+		};
+
+	});
 
 })();

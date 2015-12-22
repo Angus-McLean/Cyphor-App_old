@@ -8,18 +8,32 @@
 				hostname: '=',
 			},
 			templateUrl : '/public/modules/channels/views/channelGroup.client.view.html',
-			controller : function ($scope, $log, CyphorModels) {
-
+			controller : ['$scope', '$log', 'CyphorModels', '$uibModal', function ($scope, $log, CyphorModels, $uibModal) {
+				console.log('executing channel group controller');
 				$scope.isCollapsed = true;
 
-				$scope.toggleChannel = function(channelObj){
-					$log.info('toggled channel : ',channelObj);
-					channelObj.active = !channelObj.active;
-					//CyphorModels.syncPost(['channels', channelObj.origin_url]);
-				}
-			}
+				$scope.open = function (channelObj) {
+					console.log('opening channel ', channelObj);
+					var modalInstance = $uibModal.open({
+						animation: true,
+						templateUrl: './../views/channelConfig.client.view.html',
+						controller: 'ModalInstanceController',
+						size: 'lg',
+						resolve: {
+							channel: function() {
+								return channelObj;
+							}
+						}
+					});
+				};
+			}]
 		};
 	};
 
 	angular.module('channels').directive('channelGroup', channelGroup);
+
+
+
+
+
 })();
