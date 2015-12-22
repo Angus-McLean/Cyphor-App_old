@@ -16,9 +16,10 @@
 					console.log('opening channel ', channelObj);
 					var modalInstance = $uibModal.open({
 						animation: true,
-						templateUrl: './../views/channelConfig.client.view.html',
+						templateUrl: '/public/modules/channels/views/channelConfig.client.view.html',
+						//windowTemplateUrl: '/public/modules/channels/views/channelConfig.client.view.html',
 						controller: 'ModalInstanceController',
-						size: 'lg',
+						size: 'sm',
 						resolve: {
 							channel: function() {
 								return channelObj;

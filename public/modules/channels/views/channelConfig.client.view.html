@@ -1,15 +1,87 @@
-<div class="modal-header" ng-controller="channelConfig">
-    <h3 class="modal-title">I'm a modal!</h3>
+<div class="modal-header" style="background-color:#404040">
+    <h3 class="modal-title">Channel Settings - {{channel.channel_name}}</h3>
 </div>
-<div class="modal-body">
-    <ul>
-        <li ng-repeat="item in items">
-            <a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ item }}</a>
-        </li>
-    </ul>
-    Selected: <b>{{ selected.item }}</b>
+<div class="modal-body dark" id="channelConfig">
+
+	<form class="style-4">
+		<table>
+			<tr>
+				<div class="form-group">
+					<td><label for="active">Active :</label></td>
+					<td>
+						<!-- <div class="icon-container">
+							<i class="" ng-class="{'fa fa-lock channelactive': channel.active, 'fa fa-unlock channelinactive' : !channel.active}" ng-click="channel.active = !channel.active"></i>
+						</div> -->
+						<div class="onoffswitch">
+							<input type="checkbox" class="onoffswitch-checkbox" id="myonoffswitch0" ng-model="channel.active">
+							<label class="onoffswitch-label" for="myonoffswitch0">
+								<span class="onoffswitch-inner"></span>
+								<span class="onoffswitch-switch"></span>
+							</label>
+						</div>
+					</td>
+				</div>
+			</tr>
+			<tr>
+				<div class="form-group">
+					<td><label for="expiry_time">Expiry Time :</label></td>
+
+					<td>
+						<!-- <label for="expiry_time">Enable :</label>
+						<input type="checkbox" name="enableExpDate" value="{{!!channel.active}}"/> -->
+						<div class="onoffswitch">
+							<input type="checkbox" class="onoffswitch-checkbox" id="myonoffswitch1" ng-model="enable_exp_time">
+							<label class="onoffswitch-label" for="myonoffswitch1">
+								<span class="onoffswitch-inner"></span>
+								<span class="onoffswitch-switch"></span>
+							</label>
+						</div>
+					</td>
+					<td>
+						<div style="float:left;padding-right:30px;" ng-show="!!enable_exp_time">
+							<input type="number" class="number-field" name="expDays" min="0" value="{{expDays}}"/>
+							<label for="expDays"> Days</label>
+						</div>
+						<div style="float:right;" ng-show="!!enable_exp_time">
+							<input type="number" class="number-field" name="expHours" min="0" value="{{expHours}}"/>
+							<label for="expHours"> Hours</label>
+						</div>
+						
+						
+					</td>
+				</div>
+			</tr>
+			<tr>
+				<div class="form-group">
+					<td><label for="expiry_count">Read Count :</label></td>
+					<td>
+						<!-- <label for="expiry_count">Enable :</label>
+						<input type="checkbox" name="enableExpCount" value="{{!!channel.expiry_count}}"/> -->
+						<div class="onoffswitch">
+						<input type="checkbox" class="onoffswitch-checkbox" id="myonoffswitch2" ng-model="enable_exp_count">
+							<label class="onoffswitch-label" for="myonoffswitch2">
+								<span class="onoffswitch-inner"></span>
+								<span class="onoffswitch-switch"></span>
+							</label>
+						</div>
+					</td>
+					<td>
+						<div ng-show="!!enable_exp_count">
+							<input type="number" class="number-field" name="expiry_count" min="0" value="{{channel.expiry_count}}"/>
+							<label for="expiry_count"> Reads</label>
+						</div>
+					</td>
+				</div>
+			</tr>
+		</table>
+		
+	</form>
+
 </div>
-<div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+<div class="modal-footer dark">
+	<a class="btn btn-red btn-lg" id="deleteKeys" ng-click="deleteKeys()">Delete Keys</a>
+	<a class="btn btn-red btn-lg" id="deleteChannel" ng-click="deleteChannel()">Delete Channel</a>
+
+	<a class="btn btn-default btn-lg" ng-click="saveChannel()">Save</a>
+	<a class="btn btn-default btn-lg" ng-click="cancel()">Cancel</a>
 </div>
