@@ -18,7 +18,7 @@ var CryptoLayer = {
 		mesText_endMessageIdentifier : 'ಠMSCL_',
 		writePath : '/api/messages/write',
 		readPath : '/api/messages/read',
-		server_URL : 'www.cryptolayer.io',
+		server_URL : 'http://dev.cyphor.io',
 		tagsToAvoidDecoding : ['SCRIPT','INPUT','TEXTAREA']
 	}
 };

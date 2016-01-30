@@ -5,7 +5,7 @@ function saveMessageObj(request, sender, sendResponse) {
 	
 	if(request.messageObj){
 		var x = new XMLHttpRequest();
-		x.open('POST','http://www.cryptolayer.io/messages/save');
+		x.open('POST', appConfig.url + '/messages/save');
 		x.setRequestHeader("Content-type","application/JSON");
 		x.onreadystatechange = function() {
 			if (x.readyState==4 && x.status==200){

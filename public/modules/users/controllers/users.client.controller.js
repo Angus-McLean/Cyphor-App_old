@@ -42,7 +42,7 @@
 				};
 
 				var credentials_str = formEncode(credentials);
-				sendFormData('http://www.cryptolayer.io/auth/signin', credentials_str);
+				sendFormData(ApplicationConfiguration.appConfig.url + '/auth/signin', credentials_str);
 
 			};
 
@@ -57,12 +57,12 @@
 				};
 
 				var credentials_str = formEncode(credentials);
-				sendFormData('http://www.cryptolayer.io/auth/signup', credentials_str);
+				sendFormData(ApplicationConfiguration.appConfig.url + '/auth/signup', credentials_str);
 			}
 
 			$scope.signoutFunction = function () {
 				$log.info('executing signout');
-				$http({method: 'GET', url : 'http://www.cryptolayer.io/auth/signout'})
+				$http({method: 'GET', url : ApplicationConfiguration.appConfig.url + '/auth/signout'})
 					.then(function (resp) {
 						console.log(resp)
 					}, function (resp) {

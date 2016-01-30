@@ -8,7 +8,7 @@ $('.navbar-collapse ul li a').click(function() {
 //     if($scope.user !== null){
 //         document.getElementsByTagName('html')[0].innerHTML = JSON.stringify($scope.user)
 //     } else {
-//         window.open('http://cryptolayer.io');
+//         window.open(ApplicationConfiguration.appConfig.url);
 //     }
 // });
 
@@ -40,7 +40,7 @@ function passMessageToActiveTab (messageObj, callback_func) {
 window.onload = function(){
     console.log('Checking if signed in..')
     var xhr = new XMLHttpRequest();
-    xhr.open('GET','http://www.cryptolayer.io/users/me');
+    xhr.open('GET',ApplicationConfiguration.appConfig.url);
     xhr.addEventListener('load',function(){
         if(this.status === 200 && this.response !== ''){
             try{

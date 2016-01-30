@@ -6,7 +6,7 @@ function saveChannelObj (request, sender, sendResponse) {
 	if(request.channelObj){
 
 		var x = new XMLHttpRequest();
-		x.open('POST','http://www.cryptolayer.io/channels/save');
+		x.open('POST',appConfig.url + '/channels/save');
 		x.setRequestHeader("Content-type","application/JSON");
 		x.onreadystatechange = function() {
 			if (x.readyState==4){
@@ -51,7 +51,7 @@ function loadChannelObj (request, sender, sendResponse) {
 
 function loadChannelsRemote (request, callback) {
 	var x = new XMLHttpRequest();
-	x.open('GET','http://www.cryptolayer.io/channels/load?origin_url='+request.origin_url);
+	x.open('GET',appConfig.url + '/channels/load?origin_url='+request.origin_url);
 	x.onreadystatechange = function() {
 		console.log(x.status);
 		if (x.readyState==4 && x.status==200){

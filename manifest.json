@@ -12,6 +12,7 @@
 	"background": {
 		"persistent": true,
 		"scripts": [
+			"application/appConfig.js",
 			"application/messaging/background/background.dispatcher.js",
 			"application/background/main/channels.background.js",
 			"application/background/main/localstorage.background.js",

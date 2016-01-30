@@ -1,5 +1,5 @@
 (function () {
-	var cryptolayer = angular.module('core')
+	var cyphor = angular.module('core')
 		.controller('MainCtrl', ["$scope", '$log', '$http', '$rootScope', 'CyphorModels', function ($scope, $log, $http, $rootScope, CyphorModels){
 
 		// Initialize $rootScope.Cyphor
@@ -16,7 +16,7 @@
 		}
 
 		//////// Load User Data ////////
-		$http.get('http://www.cryptolayer.io/users/me').then(function (response) {
+		$http.get(ApplicationConfiguration.appConfig.url + '/users/me').then(function (response) {
 			$rootScope.user = response.data;
 			// $rootScope.user = {
 			// 	avatar : '/public/modules/users/img/incognito_small.jpg',

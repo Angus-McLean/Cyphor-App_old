@@ -22,25 +22,41 @@ CyphorRouter.register('/users/me', function (request, sender, sendResponse) {
 		});
 	} else {
 		executeHttp(request.method, request.url, request.data || request.body, function (httpResp) {
-			var responseBody = JSON.parse(httpResp.responseText);
-
-			if(Array.isArray(responseBody)){
-				responseBody.forEach(function (elem) {
-					elem.url = request.url;
-					CyphorDB.push(elem._id, elem, 'serverResp');
+			if(httpResp.status != 200){
+				sendResponse({
+					status : httpResp.status,
+					body : null,
+					data : null,
+					resposne : httpResp.responseText
 				});
-			} else if(typeof(responseBody) == 'object') {
-				responseBody.url = request.url;
-				CyphorDB.push(responseBody._id, responseBody, 'serverResp');
-			}
+			} else {
+				var responseBody = JSON.parse(httpResp.responseText);
 
-			sendResponse({
-				status : 200,
-				body : responseBody,
-				data : responseBody,
-				resposne : JSON.stringify(responseBody)
-			});
-		})
+				if(Array.isArray(responseBody)){
+					responseBody.forEach(function (elem) {
+						elem.url = request.url;
+						CyphorDB.push(elem._id, elem, 'serverResp');
+					});
+				} else if(typeof(responseBody) == 'object' && responseBody != null) {
+					responseBody.url = request.url;
+					CyphorDB.push(responseBody._id, responseBody, 'serverResp');
+				} else {
+					return sendResponse({
+						status : 200,
+						body : responseBody,
+						data : responseBody,
+						resposne : JSON.stringify(responseBody)
+					});
+				}
+
+				sendResponse({
+					status : 200,
+					body : responseBody,
+					data : responseBody,
+					resposne : JSON.stringify(responseBody)
+				});
+			}
+		});
 	}
 });
 
@@ -59,27 +75,40 @@ CyphorRouter.register('/channels/me', function (request, sender, sendResponse) {
 		});
 	} else {
 		executeHttp(request.method, request.url, request.data || request.body, function (httpResp) {
-			var responseBody = JSON.parse(httpResp.responseText);
-
-			if(Array.isArray(responseBody)){
-				responseBody.forEach(function (elem) {
-
-					elem.url = request.url;
-					CyphorDB.push(elem._id, elem, 'serverResp');
+			if(httpResp.status != 200){
+				sendResponse({
+					status : httpResp.status,
+					body : null,
+					data : null,
+					resposne : httpResp.responseText
 				});
-			} else if(typeof(responseBody) == 'object') {
-				responseBody.url = request.url;
-				CyphorDB.push(responseBody._id, responseBody, 'serverResp');
+			} else {
+				var responseBody = JSON.parse(httpResp.responseText);
+
+				if(Array.isArray(responseBody)){
+					responseBody.forEach(function (elem) {
+						elem.url = request.url;
+						CyphorDB.push(elem._id, elem, 'serverResp');
+					});
+				} else if(typeof(responseBody) == 'object' && responseBody != null) {
+					responseBody.url = request.url;
+					CyphorDB.push(responseBody._id, responseBody, 'serverResp');
+				} else {
+					return sendResponse({
+						status : 200,
+						body : responseBody,
+						data : responseBody,
+						resposne : JSON.stringify(responseBody)
+					});
+				}
+
+				sendResponse({
+					status : 200,
+					body : responseBody,
+					data : responseBody,
+					resposne : JSON.stringify(responseBody)
+				});
 			}
-
-			sendResponse({
-				status : 200,
-				body : responseBody,
-				data : responseBody,
-				resposne : JSON.stringify(responseBody)
-			});
-
-			
 		})
 	}
 });
@@ -245,7 +274,7 @@ function saveServerResp (httpResp, sendResponse) {
 
 function executeHttp (method, path, body, callback) {
 	var x = new XMLHttpRequest();
-	x.open(method,'http://www.cryptolayer.io'+path);
+	x.open(method, appConfig.url + path);
 	x.setRequestHeader('Content-Type', 'application/json');
 	x.onreadystatechange = function() {
 		if (x.readyState==4){

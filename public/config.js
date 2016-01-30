@@ -3,7 +3,7 @@
 // Init the application configuration module for AngularJS application
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
-	var applicationModuleName = 'cryptolayer';
+	var applicationModuleName = 'cyphor';
 	var applicationModuleVendorDependencies = [];
 
 	// Add a new vertical module
@@ -15,9 +15,14 @@ var ApplicationConfiguration = (function() {
 		angular.module(applicationModuleName).requires.push(moduleName);
 	};
 
+	var appConfig = {
+		url : 'http://dev.cyphor.io'
+	};
+
 	return {
 		applicationModuleName: applicationModuleName,
 		applicationModuleVendorDependencies: applicationModuleVendorDependencies,
-		registerModule: registerModule
+		registerModule: registerModule,
+		appConfig : appConfig
 	};
 })();
