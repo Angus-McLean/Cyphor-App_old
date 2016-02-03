@@ -1,8 +1,8 @@
 (function() {
 
 	angular.module('channels')
-	.controller('channelsPageCtrl', ['$scope', '$http', '$rootScope', '$log', 'chromeMessage', 'CyphorModels',
-		function($scope, $http, $rootScope, $log, chromeMessage, CyphorModels) {
+	.controller('channelsPageCtrl', ['$scope', '$http', '$rootScope', '$log', 'chromeMessage', 'CyphorModels', '$uibModal',
+		function($scope, $http, $rootScope, $log, chromeMessage, CyphorModels, $uibModal) {
 
 			$log.info('loaded channelsPageCtrl');
 
@@ -51,7 +51,45 @@
 				});
 			}
 
+			$scope.open = function (channelObj) {
+				console.log('opening channel ', channelObj);
+				var modalInstance = $uibModal.open({
+					animation: true,
+					templateUrl: '/public/modules/channels/views/channelConfig.client.view.html',
+					controller: 'ModalInstanceController',
+					size: 'lg',
+					resolve: {
+						channel: function() {
+							return channelObj;
+						}
+					}
+				});
+			};
+
 		}
 	])
+	// Controller used for the modal instance
+	.controller('ModalInstanceController', function($scope, $uibModalInstance, channel) {
+
+		$scope.channel = channel;
+
+		$scope.close = function() {
+			$uibModalInstance.close();
+		};
+
+		// dictate to show or hide channel expiry parameters
+		$scope.enable_exp_time = !!channel.expiry_time;
+		$scope.expDays = 0;
+		$scope.expHours = 0;
+		if(!isNaN(channel.expiry_time)){
+			$scope.expDays = parseInt(channel.expiry_time/(1000*60*60*24));
+			// hours = (expiry time - number of days) / (seconds in an hour)
+			$scope.expHours = parseInt((channel.expiry_time - $scope.expDays*(1000*60*60*24))/(1000*60*60));
+		}
+
+		$scope.enable_exp_count = !!channel.expiry_count;
+		console.log($scope);
+
+	});
 
 })();
