@@ -74,18 +74,22 @@
 
 	function buildPathObj (eve, tempChannel) {
 		var recipElem = tempChannel.recipient_elem;
+
+		// account for iframes
+		var parentDocument = (document.activeElement.nodeName == 'IFRAME') ? document.activeElement.contentDocument : document;
+
 		var paths = {
 			editable : Cyphor.dom.getFullPath(tempChannel.editable_elem).replace(/ > /g,'\u0000> ').split('\u0000'),
 			editable_recipient : Cyphor.dom.buildPath(tempChannel.editable_elem, recipElem),
 			recipient_editable : Cyphor.dom.buildPath(recipElem, tempChannel.editable_elem),
 			
-			active : Cyphor.dom.getFullPath(document.activeElement).replace(/ > /g,'\u0000> ').split('\u0000'),
-			active_recipient : Cyphor.dom.buildPath(document.activeElement, recipElem),
-			recipient_active : Cyphor.dom.buildPath(recipElem, document.activeElement),
+			active : Cyphor.dom.getFullPath(parentDocument.activeElement).replace(/ > /g,'\u0000> ').split('\u0000'),
+			active_recipient : Cyphor.dom.buildPath(parentDocument.activeElement, recipElem),
+			recipient_active : Cyphor.dom.buildPath(recipElem, parentDocument.activeElement),
 			
-			selection : Cyphor.dom.getFullPath(window.getSelection().baseNode).replace(/ > /g,'\u0000> ').split('\u0000'),
-			selection_recipient : Cyphor.dom.buildPath(window.getSelection().baseNode, recipElem),
-			recipient_selection : Cyphor.dom.buildPath(recipElem, window.getSelection().baseNode),
+			selection : Cyphor.dom.getFullPath(parentDocument.getSelection().baseNode).replace(/ > /g,'\u0000> ').split('\u0000'),
+			selection_recipient : Cyphor.dom.buildPath(parentDocument.getSelection().baseNode, recipElem),
+			recipient_selection : Cyphor.dom.buildPath(recipElem, parentDocument.getSelection().baseNode),
 			
 			clicked : Cyphor.dom.getFullPath(eve.target).replace(/ > /g,'\u0000> ').split('\u0000'),
 			clicked_recipient : Cyphor.dom.buildPath(eve.target, recipElem),
@@ -133,7 +137,7 @@
 		var channelObj = {
 			origin_url : window.location.host,
 			channel_paths : Cyphor.dom.buildPath(t.editable_elem, t.recipient_elem),
-			channel_name : t.recipient_elem.innerText,
+			channel_name : (t.recipient_elem.innerText != '') ? t.recipient_elem.innerText : t.recipient_elem.value,
 			channel_id : channel_id,
 			active : true,
 			paths : buildPathObj(eve, t),

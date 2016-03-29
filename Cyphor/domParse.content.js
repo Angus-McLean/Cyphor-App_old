@@ -6,9 +6,13 @@
 			next_elem;
 		for (var i = 0; i < pathArr.length; i++) {
 			if(pathArr[i] == '^'){
-				try{
+				
+				// account for traversing upwards through iframes
+				if(cur_elem.parentElement == null && cur_elem.ownerDocument.defaultView.frameElement != null){
+					cur_elem = cur_elem.ownerDocument.defaultView.frameElement;
+				} else if(cur_elem.parentElement != null) {
 					cur_elem = cur_elem.parentElement;
-				} catch (e) {
+				} else {
 					return null;
 				}
 				
@@ -35,8 +39,14 @@
 		var cur = origin,
 			path = [];
 
-		while(!cur.contains(destination)){
-			cur = cur.parentElement;
+		var destinationIframe = (!document.contains(destination)) ? destination.ownerDocument.defaultView.frameElement : null;
+		while(!cur.contains(destination) || (destinationIframe && !cur.contains(destinationIframe))){
+			// account for traversing upwards through iframes
+			if(cur.parentElement == null && cur.ownerDocument.defaultView.frameElement != null){
+				cur = cur.ownerDocument.defaultView.frameElement;
+			} else {
+				cur = cur.parentElement;
+			}
 			path.push('^');
 		}
 		while(cur){
@@ -47,11 +57,16 @@
 		return path;
 	}
 
+	//@TODO : account for nested Iframes
 	// get one level queryselector for a target child element
 	function getContainingElemPath (parentElement, targetElem) {
-		var elems = parentElement.childNodes
+		// parentElement is an iframe
+		var elems = (parentElement.nodeName == 'IFRAME') ? parentElement.contentDocument.children : parentElement.children
+		
+		// destination element is in iframe
+		var destinationIframe = (!document.contains(targetElem)) ? targetElem.ownerDocument.defaultView.frameElement : null;
 		for(var i=0;i<elems.length;i++){
-			if(elems[i].contains(targetElem)){
+			if(elems[i].contains(targetElem) || (destinationIframe && elems[i].contains(destinationIframe))){
 				
 				// get index of particular element
 				var ind;
@@ -65,10 +80,8 @@
 						} else {
 							return ':scope > '+elems[i].nodeName.toLowerCase()+':nth-child('+(j+1)+')';
 						}
-						
 					}
 				}
-
 			}
 		}
 	}

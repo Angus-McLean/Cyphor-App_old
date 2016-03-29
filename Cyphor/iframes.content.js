@@ -6,7 +6,8 @@
 
 	var iframeMod = {
 		list : [],
-		create : createIframe
+		create : createIframe,
+		insertIframe : insertIframe
 	};
 
 	window.Cyphor.iframes = iframeMod;
@@ -21,25 +22,32 @@
 		var key = e.message ? "message" : "data";
 		var data = e[key];
 		if(e.origin == 'https://www.cyphor.io'){
-			e.preventDefault();
-			e.stopPropagation();
+
+			
+			console.log('iframe message :', e);
+			
+			// swap display of iframe and target elem
+			var sourceFrameObj = iframeMod.list.filter(function (frameObj) {
+				return frameMessageEvent.source == frameObj.iframe.contentWindow
+			});
 
 			if(data.action == 'MESSAGE'){
-				
-				console.log('iframe message :', e);
-				
-				// swap display of iframe and target elem
-				var sourceFrameObj = iframeMod.list.filter(function (frameObj) {
-					return frameMessageEvent.source == frameObj.iframe.contentWindow
-				});
-				
 				if(sourceFrameObj && sourceFrameObj.length == 1){
 					enterEncryptedText(sourceFrameObj[0], data);
 				} else {
 					console.error('found '+sourceFrameObj.length+' source iframeObjs for this message');
 				}
-
+			} else if (data.action == 'SUBMIT_BUTTON'){
+				if(sourceFrameObj && sourceFrameObj.length == 1){
+					enterEncryptedText(sourceFrameObj[0], data);
+				} else {
+					console.error('found '+sourceFrameObj.length+' source iframeObjs for this message');
+				}
 			}
+
+			e.preventDefault();
+			e.stopPropagation();
+
 		}
 		return false;
 	},true);
@@ -51,8 +59,6 @@
 		sourceFrameObj.targetElem.style.display = '';
 
 		messageObj.coords = getCoords(sourceFrameObj.targetElem);
-
-
 
 		// send message to background so it can be typed
 		chrome.runtime.sendMessage(null, messageObj, null, function () {
@@ -245,12 +251,13 @@
 			var coords = getCoords(siblingElem)
 			var insertedFrame = insertIframe(siblingElem);
 			
-			var cyphorInputObj = {
-				iframe : insertedFrame,
-				channel : channelObj,
-				targetElem : siblingElem,
-				coords : coords
-			};
+			var cyphorInputObj = new CyphorInput();
+
+			cyphorInputObj.iframe = insertedFrame;
+			cyphorInputObj.channel = channelObj;
+			cyphorInputObj.targetElem = siblingElem;
+			cyphorInputObj.coords = coords;
+			
 			iframeMod.list.push(cyphorInputObj);
 		}
 	}
