@@ -254,6 +254,7 @@
 			var cyphorInputObj = new CyphorInput();
 
 			cyphorInputObj.iframe = insertedFrame;
+			cyphorInputObj.iframe.contentWindow.postMessage({action:'CHANNEL', channel:channelObj}, '*');
 			cyphorInputObj.channel = channelObj;
 			cyphorInputObj.targetElem = siblingElem;
 			cyphorInputObj.coords = coords;
