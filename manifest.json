@@ -22,6 +22,8 @@
 			"js": [
 				"/Cyphor/pageinit.content.js",
 				"/Cyphor/CyphorInput.content.js",
+				"/Cyphor/CyphorInterceptor.content.js",
+				"/Cyphor/CyphorObserver.content.js",
 				"/Cyphor/domParse.content.js",
 				"/Cyphor/channels.content.js",
 				"/Cyphor/iframes.content.js",

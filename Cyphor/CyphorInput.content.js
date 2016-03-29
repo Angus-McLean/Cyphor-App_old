@@ -34,10 +34,17 @@
 		return {x:x,y:y};
 	}
 
+	function prevent (eve) {
+		eve.stopPropagation();
+		eve.preventDefault();			
+		return false;
+	}
+
 	CyphorInput.prototype.addSendButton = function(buttonElem) {
 		var _self = this;
 		_self.sendButton = buttonElem;
-		buttonElem.addEventListener('mousedown', function (eve) {
+
+		buttonElem.addEventInterceptor('mousedown', function (eve) {
 			
 			// if the CyphorInput is busy inputting text, don't intercept the event
 			if(!_self.isTyping){
@@ -62,7 +69,39 @@
 				eve.stopPropagation();
 				return false;
 			}
-			
-		}, true);
+		});
+
+		function preventUser (eve) {
+			// checks if its the chrome extension is typing
+			if(!_self.isTyping){
+				eve.preventDefault();
+				eve.stopPropagation();
+				return false;
+			}
+		}
+
+		// prevent user click from passing through
+		buttonElem.addEventInterceptor('mouseup', preventUser);
+		buttonElem.addEventInterceptor('click', preventUser);
 	};
+
+	CyphorInput.prototype.configureSendButton = function () {
+		var _CyphorInputContext = this;
+		function clickFn (eve) {
+			console.log('captured click');
+			_CyphorInputContext.addSendButton(eve.target);
+
+			window.removeEventListener('mousedown', clickFn, true);
+			window.removeEventListener('mouseup', prevent, true);
+			window.removeEventListener('click', prevent, true);
+
+			eve.stopPropagation();
+			eve.preventDefault();
+			return false;
+		}
+
+		window.addEventListener('mousedown', clickFn, true);
+		window.addEventListener('mouseup', prevent, true);
+		window.addEventListener('click', prevent, true);
+	}
 })();
