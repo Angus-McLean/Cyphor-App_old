@@ -13,11 +13,11 @@
 		// insert the iframe
 		this.insertIframe();
 
-		listenForRecipientElemChange(this, this.recipientElem);
+		//listenForRecipientElemChange(this, this.recipientElem);
 	}
 
 	function listenForRecipientElemChange (thisCyph, recipientElem) {
-		
+		/*
 		CyphorObserver.observe(recipientElem, function (mutationRecord) {
 			//@TODO : set up so that it handle characterData too
 			if(mutationRecord.type == 'childList'){
@@ -34,6 +34,25 @@
 				}
 			}
 		});
+		*/
+
+		CyphorObserver.on('remove', recipientElem, function (mutationRecord) {
+			//@TODO : set up so that it handle characterData too
+			if(mutationRecord.type == 'childList'){
+				// element was removed or changed.. check if its a configured channel
+				var resObj = Cyphor.dom.parseNodeForActiveInputs(thisCyph.targetElem);
+				if(resObj && resObj.elementsObj.editable_elem == thisCyph.targetElem && resObj.channel ==  thisCyph.channel){
+					// do nothing because its the same channel
+				} else {
+					// channel has changed.. remove the currently configured CyphorInput
+					thisCyph.takeout();
+					if(resObj) {
+						Cyphor.iframes.create(resObj.elementsObj, resObj.channel);
+					}
+				}
+			}
+		});
+
 	}
 
 	function getCoords (elem) {
@@ -81,7 +100,6 @@
 			return;
 		}
 		
-
 		var ifr = Cyphor.iframes.insertIframe(this.targetElem, this.channel);
 		this.iframe = ifr;
 
@@ -101,6 +119,9 @@
 
 			}
 		});
+
+		// listen for removal of recipient element
+		listenForRecipientElemChange(this, this.recipientElem);
 
 		// update references
 		this.targetElem.CyphorInput = this;

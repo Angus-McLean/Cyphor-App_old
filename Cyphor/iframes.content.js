@@ -8,7 +8,8 @@
 		list : [],
 		create : createIframe,
 		insertIframe : insertIframe,
-		verifyIfSavedChannel : verifyIfSavedChannel
+		verifyIfSavedChannel : verifyIfSavedChannel,
+		verifyIfSavedChannelByRecipient : verifyIfSavedChannelByRecipient
 	};
 
 	window.Cyphor.iframes = iframeMod;
@@ -181,6 +182,7 @@
 		return iframe;
 	}
 
+	//@TODO : add error handling when find multiple configured channels
 	function verifyIfSavedChannel (start_node, channelObjIndex) {
 		
 		var recipElem;
@@ -198,6 +200,50 @@
 			}
 		}
 		return false;
+	}
+
+	function verifyIfSavedChannelByRecipient (recipient_node, channelObjIndex) {
+		// quick validate of recipient node
+		if(!recipient_node.innerText || recipient_node.innerText == ''){
+			return false;
+		}
+
+		var finalChannel = [];
+
+		// iterate all channels
+		for(var i in channelObjIndex){
+
+			var recipChannels = channelObjIndex[i].filter(function (chanObj) {
+				return chanObj.channel_name == recipient_node.innerText;
+			});
+			// there are channels that exist with that recipient name
+			if(recipChannels.length){
+
+				recipChannels.forEach(function (chan) {
+					var editable_elem = window.Cyphor.dom.traversePath(recipient_node, chan.paths.recipient_editable, true);
+
+					// validate that the destination element is a valid input element
+					if(editable_elem && (editable_elem.isContentEditable || editable_elem.tagName == 'INPUT' || editable_elem.tagName == 'TEXTAREA')){
+						finalChannel.push({
+							elementsObj : {
+								editable_elem : editable_elem,
+								recipient_elem : recipient_node
+							},
+							channel : chan
+						});
+					}
+				});
+				
+			}
+		}
+
+		if(finalChannel.length == 1){
+			return finalChannel[0];
+		} else if(finalChannel.length > 1){
+			throw 'verifyIfSavedChannelByRecipient found multiple configured channels for this recipient element';
+		} else {
+			return false;
+		}
 	}
 
 /*
@@ -332,10 +378,13 @@
 	iframeRemovalObserver.observe(document, iframeObsParams)
 */
 
-	// watch for channel input elements
+	//@TODO : move this to the channels module...
+	// watch for new channels in the page
 	var inputInsertion = new MutationObserver(function(mutations){
 		mutations.forEach(function (mut) {
 			Array.prototype.forEach.call(mut.addedNodes, function (addedNode) {
+				
+				// check by input elements
 				var resObj = Cyphor.dom.parseNodeForActiveInputs(addedNode);
 				if(resObj){
 					createIframe(resObj.elementsObj, resObj.channel);
@@ -348,6 +397,15 @@
 						}
 					}, 10);
 				}
+
+
+				
+				// check by possible recipient elements
+				var recipObj = Cyphor.dom.parseNodeForActiveRecipients(addedNode);
+				if(recipObj){
+					createIframe(recipObj.elementsObj, recipObj.channel);
+				}
+
 			});
 		});
 	});

@@ -178,7 +178,7 @@
 			}
 			queryStr = queryStr.replace(/, $/,'');
 
-			activeElems = (queryStr && queryStr != '') ? node.querySelectorAll(queryStr) : [];
+			var activeElems = (queryStr && queryStr != '') ? node.querySelectorAll(queryStr) : [];
 
 			if(activeElems.length){
 				// iterate array of possible active inputs to see if they're are currently in an active channel
@@ -192,20 +192,55 @@
 							},
 							channel : chanObj
 						};
-						//createIframe({editable_elem:elem}, chanObj)
 					}
 				});
 
 				if(returnVal){
 					return returnVal;
 				}
-
 			}
+		}
+	}
+
+	function parseNodeForActiveRecipients (node) {
+
+		// make sure node is an Element
+		node = (node instanceof Element) ? node : node.parentElement;
+
+		// validate the element (sometimes .parentElement returns null)
+		if(!node){
+			return;
+		}
+
+		// build massive active element query string
+		var queryStr = '';
+
+		for(var i in Cyphor.channels.index.selectors.recipient){
+			for(var j in Cyphor.channels.index.selectors.recipient[i]){
+				queryStr += j + ', '
+			}
+		}
+		queryStr = queryStr.replace(/, $/,'');
+
+
+
+		var activeElems = (queryStr && queryStr != '') ? node.querySelectorAll(queryStr) : [];
+
+		if(activeElems.length){
+			// iterate array of possible active recipients to see if they're are currently in an active channel
+			var returnVal;
+			Array.prototype.forEach.call(activeElems, function (elem) {
+				var resObj = Cyphor.iframes.verifyIfSavedChannelByRecipient(elem, Cyphor.channels.index.relative);
+				returnVal = (resObj) ? resObj : returnVal;
+			});
+			
+			return returnVal;
 		}
 	}
 
 	window.Cyphor.dom = {
 		parseNodeForActiveInputs : parseNodeForActiveInputs,
+		parseNodeForActiveRecipients : parseNodeForActiveRecipients,
 		traversePath : traversePath,
 		buildPath : buildPath,
 		getBaseTextNode : getBaseTextNode,
