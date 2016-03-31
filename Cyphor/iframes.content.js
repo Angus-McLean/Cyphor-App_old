@@ -7,7 +7,8 @@
 	var iframeMod = {
 		list : [],
 		create : createIframe,
-		insertIframe : insertIframe
+		insertIframe : insertIframe,
+		verifyIfSavedChannel : verifyIfSavedChannel
 	};
 
 	window.Cyphor.iframes = iframeMod;
@@ -66,15 +67,20 @@
 
 			// finished typing
 		
-			console.log('Setting back iframe display')
-			sourceFrameObj.targetElem.style.display = 'none';
-			sourceFrameObj.iframe.style.display = '';
+			
+			if(sourceFrameObj.targetElem){
+				sourceFrameObj.targetElem.style.display = 'none';
+			}			
+			if(sourceFrameObj.iframe){
+				console.log('Setting back iframe display')
+				sourceFrameObj.iframe.style.display = '';
+			}			
 			sourceFrameObj.isTyping = false;
 			
 			setTimeout(function () {
-				sourceFrameObj.iframe.focus();
-				sourceFrameObj.iframe.contentWindow.postMessage({action:'FOCUS'}, '*');
-				if(sourceFrameObj.iframe.contentWindow){
+				if(sourceFrameObj.iframe && sourceFrameObj.iframe.contentWindow){
+					sourceFrameObj.iframe.focus();
+					sourceFrameObj.iframe.contentWindow.postMessage({action:'FOCUS'}, '*');
 					sourceFrameObj.iframe.contentWindow.focus();
 				}
 			},50);
@@ -113,7 +119,7 @@
 		return iframe;
 	}
 */
-	function insertIframe (siblingElem) {
+	function insertIframe (siblingElem, channelObj) {
 
 		var parStyle = window.getComputedStyle(siblingElem.parentElement);
 		var parStyleJSON = JSON.parse(JSON.stringify(parStyle));
@@ -154,6 +160,13 @@
 
 		iframe.onload = function () {
 			//iframe.contentWindow.postMessage({action:'INSERT'}, '*', [messageObj])
+
+			// send channel object to iframe
+			iframe.contentWindow.postMessage({
+				action:'CHANNEL',
+				channel:channelObj || null
+			}, '*');
+
 			iframe.contentWindow.postMessage(messageObj, '*');
 			iframe.focus();
 			iframe.contentWindow.postMessage({action:'FOCUS'}, '*');
@@ -162,7 +175,7 @@
 				iframe.contentWindow.focus();
 			}
 		}
-
+		siblingElem.originalDisplay = (siblingElem.style) ? siblingElem.style.display : '';
 		siblingElem.style.display = 'none';
 
 		return iframe;
@@ -231,40 +244,48 @@
 						existingFrame[0].iframe.style.display = '';
 					}
 				} else {
-					createIframe(eve.target, activeChannel);
+					createIframe({editable_elem:eve.target}, activeChannel);
 				}
 			}
 		}
 	}
 
-	function createIframe (siblingElem, channelObj) {
+	function createIframe (elemsObj, channelObj) {
 		
+
+		var targetElem = elemsObj.editable_elem || elemsObj;			//@TEMP : just so createIframe is backwards compatible
+		if(targetElem.CyphorInput){
+			return;
+		}
+		//@TODO : this whole already exists thing will break if you have multiple iframes for the same channel on one page
 		// check if cyphorInput Obj already exists
 		var existing = iframeMod.list.filter(function (cyphorInputObj) {
 			return cyphorInputObj.channel == channelObj;
 		});
 		
 		if(existing && existing.length){
-			existing[0].targetElem = siblingElem;
-			existing[0].iframe = insertIframe(siblingElem);
+			existing[0].targetElem = targetElem;
+			existing[0].insertIframe(targetElem);
 		} else {
-			var coords = getCoords(siblingElem)
-			var insertedFrame = insertIframe(siblingElem);
+			//var coords = getCoords(targetElem)
+			//var insertedFrame = insertIframe(targetElem);
 			
-			var cyphorInputObj = new CyphorInput();
+			var cyphorInputObj = new CyphorInput(elemsObj, channelObj);
 
-			cyphorInputObj.iframe = insertedFrame;
-			cyphorInputObj.iframe.contentWindow.postMessage({action:'CHANNEL', channel:channelObj}, '*');
-			cyphorInputObj.channel = channelObj;
-			cyphorInputObj.targetElem = siblingElem;
-			cyphorInputObj.coords = coords;
+			//cyphorInputObj.iframe = insertedFrame;
+			//cyphorInputObj.channel = channelObj;
+			//cyphorInputObj.targetElem = targetElem;
+			//cyphorInputObj.coords = coords;
 			
+			// add references to the cyphorInput Object
 			iframeMod.list.push(cyphorInputObj);
+			targetElem.CyphorInput = cyphorInputObj;
 		}
 	}
 
 	window.addEventListener('click', handleInputClick, true);
 
+/*
 	// watch for removal of iframe
 	var iframeRemovalObserver = new MutationObserver(function(mutations){
 		mutations.forEach(function (mut) {
@@ -273,8 +294,6 @@
 					if(mut.removedNodes[i].querySelectorAll){
 						var removedFrames = mut.removedNodes[i].querySelectorAll('iframe');
 						if(removedFrames && removedFrames.length){
-							
-							//parseNodeForActiveInputs(mut.target);
 
 							
 							for(var j=0;j<removedFrames.length;j++){
@@ -287,11 +306,11 @@
 										var query = cyphFrame.channel.paths.recipient_editable.slice(cyphFrame.channel.paths.recipient_editable.lastIndexOf('^')+1).join('').replace(/:scope/g,'').replace(/\:nth\-child\([0-9]+\)/g,'');
 										
 										// mut.target gives the parent node that has remained in the DOM. Query full path relative to that element.
-										var newTarg = mut.target.querySelectorAll(query.replace(/^ *> */,'')+' '+cyphFrame.channel.selectors.editable.class);
-										console.log('<query> gave following <target> from <mutation record>',query.replace(/^ *> */,'')+' '+cyphFrame.channel.selectors.editable.class, newTarg, mut);
+										var newTarg = mut.target.querySelectorAll(query.replace(/^ *> * ?/,'')+' '+cyphFrame.channel.selectors.editable.class);
+										console.log('<query> gave following <target> from <mutation record>',query.replace(/^ *> * ?/,'')+' '+cyphFrame.channel.selectors.editable.class, newTarg, mut);
 										if(newTarg && newTarg.length && verifyIfSavedChannel(newTarg[0], Cyphor.channels.index.relative)){
 											// create a new identical iFrame
-											createIframe(newTarg[0], Cyphor.iframes.list[ind].channel);
+											createIframe({editable_elem:newTarg[0]}, Cyphor.iframes.list[ind].channel);
 										}
 										//arr.splice(ind, 1);
 									}
@@ -311,57 +330,50 @@
 	}
 
 	iframeRemovalObserver.observe(document, iframeObsParams)
-
-
-	function parseNodeForActiveInputs (node) {
-		// quickly query if there's any input or editable elements in the addedNode
-		var inputElems = (node.querySelectorAll)?node.querySelectorAll('input', 'textarea', '[contenteditable=true]') : [];
-
-		if(inputElems && inputElems.length){
-			// build massive active element query string
-			var queryStr = '';
-
-			for(var i in Cyphor.channels.index.selectors.editable){
-				for(var j in Cyphor.channels.index.selectors.editable[i]){
-					queryStr += j + ', '
-				}
-			}
-			queryStr = queryStr.replace(/, $/,'');
-
-			activeElems = (queryStr && queryStr != '') ? node.querySelectorAll(queryStr) : [];
-
-			if(activeElems.length){
-				// iterate array of possible active inputs to see if they're are currently in an active channel
-				Array.prototype.forEach.call(activeElems, function (elem) {
-					var chanObj = verifyIfSavedChannel(elem, Cyphor.channels.index.relative);
-					if(chanObj){
-						createIframe(elem, chanObj)
-					}
-				});
-			}
-		}
-	}
+*/
 
 	// watch for channel input elements
 	var inputInsertion = new MutationObserver(function(mutations){
 		mutations.forEach(function (mut) {
 			Array.prototype.forEach.call(mut.addedNodes, function (addedNode) {
-				parseNodeForActiveInputs(addedNode)
-			})
-		})
+				var resObj = Cyphor.dom.parseNodeForActiveInputs(addedNode);
+				if(resObj){
+					createIframe(resObj.elementsObj, resObj.channel);
+				} else if(addedNode.querySelectorAll && addedNode.querySelectorAll('input', 'textarea', '[contenteditable=true]').length){
+					// account for times where elements are still being added so parsing fails to detect the configured channel as the entire DOM portion isn't inserted yet
+					setTimeout(function () {
+						var resObj = Cyphor.dom.parseNodeForActiveInputs(addedNode);
+						if(resObj){
+							createIframe(resObj.elementsObj, resObj.channel);
+						}
+					}, 10);
+				}
+			});
+		});
 	});
 	var newInputsObserverConfig = {
 		subtree : true,
 		childList: true,
 	}
 	inputInsertion.observe(document, newInputsObserverConfig)
-
+/*
 	// change to contenteditable
 	var contenteditableChangeObs = new MutationObserver(function (muts) {
 		muts.filter(function (m) {
 			return m.type == 'attributes';
 		}).forEach(function (mut) {
-			parseNodeForActiveInputs(mut.target);
+			var resObj = parseNodeForActiveInputs(mut.target.parent);
+			if(resObj){
+				createIframe(resObj.elementsObj, resObj.channel);
+			} else if(addedNode.querySelectorAll && addedNode.querySelectorAll('input', 'textarea', '[contenteditable=true]').length){
+				// account for times where elements are still being added so parsing fails to detect the configured channel as the entire DOM portion isn't inserted yet
+				setTimeout(function () {
+					var resObj = parseNodeForActiveInputs(addedNode);
+					if(resObj){
+						createIframe(resObj.elementsObj, resObj.channel);
+					}
+				}, 10);
+			}
 		});
 	});
 	var contenteditableChangeParams = {
@@ -371,5 +383,5 @@
 		attributeFilter: ['contenteditable']
 	};
 	contenteditableChangeObs.observe(document, contenteditableChangeParams);
-
+*/
 })();

@@ -64,7 +64,7 @@
 				
 				var savedChannelObj = saveChannelObj(eve);
 
-				Cyphor.iframes.create(window.Cyphor.channels.tempChannel.editable_elem, savedChannelObj);
+				Cyphor.iframes.create(Cyphor.channels.tempChannel, savedChannelObj);
 
 				state = null;
 				removeGreyOverlay();

@@ -16,6 +16,7 @@
 			});
 		}
 
+/*
 		// call listeners for target nodes
 		if(mutRec.target){
 			listeners.forEach(function (listener) {
@@ -24,13 +25,26 @@
 				}
 			});
 		}
+*/
 	}
 
-	var obs = new MutationObserver(function (muts) {
+	var globalObserver = new MutationObserver(function (muts) {
 		muts.forEach(processMutation);
 	});
 
+	var globalObserverParams = {
+		subtree : true,
+		childList: true,
+		attributes: true,
+		attributeFilter: ['contenteditable']
+	};
+
+	globalObserver.observe(document, globalObserverParams);
+
 	function addObserver (element, fn) {
+		if(!element || !fn){
+			throw 'invalid parameters for cyphor mutation observer';
+		}
 		listeners.push({
 			target : element,
 			listener : fn

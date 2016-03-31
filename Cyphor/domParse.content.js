@@ -22,8 +22,10 @@
 					next_elem = cur_elem.querySelectorAll(':scope'+query + ', '+query.replace(/^ *> */,''));
 					if(next_elem && next_elem.length == 1){
 						return next_elem[0];
-					} else {
+					} else if(next_elem && next_elem.length != 0){
 						cur_elem = cur_elem.querySelectorAll(pathArr[i])[0];
+					} else {
+						return null;
 					}
 				} else {
 					next_elem = cur_elem.querySelectorAll(pathArr[i])[0];
@@ -160,7 +162,50 @@
 		}
 	}
 
+	function parseNodeForActiveInputs (node) {
+		// quickly query if there's any input or editable elements in the addedNode
+		var inputElems = (node.querySelectorAll)?node.querySelectorAll('input', 'textarea', '[contenteditable=true]') : [];
+		var nodeIsInput = (node.isContentEditable || node.tagName == 'INPUT' || node.tagName == 'TEXTAREA');
+
+		if(inputElems.length || nodeIsInput){
+			// build massive active element query string
+			var queryStr = '';
+
+			for(var i in Cyphor.channels.index.selectors.editable){
+				for(var j in Cyphor.channels.index.selectors.editable[i]){
+					queryStr += j + ', '
+				}
+			}
+			queryStr = queryStr.replace(/, $/,'');
+
+			activeElems = (queryStr && queryStr != '') ? node.querySelectorAll(queryStr) : [];
+
+			if(activeElems.length){
+				// iterate array of possible active inputs to see if they're are currently in an active channel
+				var returnVal;
+				Array.prototype.forEach.call(activeElems, function (elem) {
+					var chanObj = Cyphor.iframes.verifyIfSavedChannel(elem, Cyphor.channels.index.relative);
+					if(chanObj){
+						returnVal = {
+							elementsObj : {
+								editable_elem : elem
+							},
+							channel : chanObj
+						};
+						//createIframe({editable_elem:elem}, chanObj)
+					}
+				});
+
+				if(returnVal){
+					return returnVal;
+				}
+
+			}
+		}
+	}
+
 	window.Cyphor.dom = {
+		parseNodeForActiveInputs : parseNodeForActiveInputs,
 		traversePath : traversePath,
 		buildPath : buildPath,
 		getBaseTextNode : getBaseTextNode,

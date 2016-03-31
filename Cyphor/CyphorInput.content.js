@@ -1,30 +1,39 @@
 // CyphorInput.content.js
 
 (function () {
-	window.CyphorInput = function CyphorInput() {
-	
+
+	window.CyphorInput = function CyphorInput(elemsObj, channelObj) {
+
 		this.iframe = null;
-		this.channel = null;
-		this.targetElem = null;
-		this.coords = null;
+		this.channel = channelObj || null;
+		this.targetElem = elemsObj.editable_elem || null;
+		this.recipientElem = elemsObj.recipient_elem || null;
+		this.coords = getCoords(this.targetElem);
 
-		var listeners = {};
+		// insert the iframe
+		this.insertIframe();
 
-		this.addListener = function (eventName, fn) {
-			if(listeners[eventName]){
-				listeners[eventName].push(fn);
-			} else {
-				listeners[eventName] = [fn];
+		listenForRecipientElemChange(this, this.recipientElem);
+	}
+
+	function listenForRecipientElemChange (thisCyph, recipientElem) {
+		
+		CyphorObserver.observe(recipientElem, function (mutationRecord) {
+			//@TODO : set up so that it handle characterData too
+			if(mutationRecord.type == 'childList'){
+				// element was removed or changed.. check if its a configured channel
+				var resObj = Cyphor.dom.parseNodeForActiveInputs(thisCyph.targetElem);
+				if(resObj && resObj.elementsObj.editable_elem == thisCyph.targetElem && resObj.channel ==  thisCyph.channel){
+					// do nothing because its the same channel
+				} else {
+					// channel has changed.. remove the currently configured CyphorInput
+					thisCyph.takeout();
+					if(resObj) {
+						Cyphor.iframes.create(resObj.elementsObj, resObj.channel);
+					}
+				}
 			}
-		}
-
-		this.emitEvent = function (eventName, eventObject) {
-			if(listeners[eventName]) {
-				listeners[eventName].forEach(function(fnElem){
-					fnElem.call(this, eventObject);
-				});
-			}
-		}
+		});
 	}
 
 	function getCoords (elem) {
@@ -39,6 +48,64 @@
 		eve.preventDefault();			
 		return false;
 	}
+
+	CyphorInput.prototype.takeout = function () {
+		
+		// clear removal observer so it doesn't get reinserted
+		CyphorObserver.removeObserver(this.iframe);
+		
+		// take out the iframe
+		this.iframe.remove();
+
+		// reset display of original element
+		if(this.targetElem.style && this.targetElem.style.display == 'none'){
+			this.targetElem.style.display = this.targetElem.originalDisplay
+		}
+
+		// clear up memory
+		this.destroy();
+	}
+
+	// clean up access to prevent memory leaks
+	CyphorInput.prototype.destroy = function() {
+		CyphorObserver.removeObserver(this.iframe);
+
+		delete this.targetElem.CyphorInput;
+		delete this.iframe.CyphorInput;
+	};
+
+	// requires that this object has its targetElem and channel object configured
+	CyphorInput.prototype.insertIframe = function() {
+
+		if(this.targetElem.CyphorInput){
+			return;
+		}
+		
+
+		var ifr = Cyphor.iframes.insertIframe(this.targetElem, this.channel);
+		this.iframe = ifr;
+
+		// listen for removal of this iframe and reinsert if channel is still configured
+		var thisCyph = this;
+		CyphorObserver.observe(ifr, function (mutationRecord) {
+			if(mutationRecord.type == 'childList'){
+				// iframe was removed, create a new CyphorInput Object
+				var resObj = Cyphor.dom.parseNodeForActiveInputs(thisCyph.targetElem);
+				if(resObj){
+					// creates a new iframe element
+					Cyphor.iframes.create(resObj.elementsObj, resObj.channel);
+				}
+
+				// either a copy has been created or this channel is no longer on the page... delete this instance
+				thisCyph.destroy();
+
+			}
+		});
+
+		// update references
+		this.targetElem.CyphorInput = this;
+		this.iframe.CyphorInput = this;
+	};
 
 	CyphorInput.prototype.addSendButton = function(buttonElem) {
 		var _self = this;
@@ -103,5 +170,5 @@
 		window.addEventListener('mousedown', clickFn, true);
 		window.addEventListener('mouseup', prevent, true);
 		window.addEventListener('click', prevent, true);
-	}
+	};
 })();

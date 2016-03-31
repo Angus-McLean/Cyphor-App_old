@@ -34,7 +34,7 @@
 
 		var decryptedObj = CryptoJS.AES.decrypt(msgTxt, decryptionKey);
 		var decryptedMessage = decryptedObj.toString(CryptoJS.enc.Utf8);
-		console.log('decrypted : '+msgTxt+' to : '+decryptedMessage);
+		//console.log('decrypted : '+msgTxt+' to : '+decryptedMessage);
 
 		return decryptedMessage;
 	}
