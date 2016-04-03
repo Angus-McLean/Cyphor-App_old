@@ -255,59 +255,6 @@
 
 		return channelObj;
 	}
-/*
-	function saveChannelObj(channel_path, channel_name, pathObj){
-
-		
-
-		var channel_id = Date.now() + Math.random().toString().substring(2,6);
-		var channelObj = {
-			origin_url : window.location.host,
-			channel_paths : channel_path,
-			channel_name : channel_name,
-			channel_id : channel_id,
-			active : true,
-			paths : pathObj
-		};
-
-		var requestObj = {
-			action : 'binder',
-			method : 'PUT',
-			url : '/binder/channels',
-			data : channelObj
-		};
-		
-		console.log('Saving Channel Obj : ', requestObj);
-
-		chrome.runtime.sendMessage(requestObj, function(response) {
-			console.log('PUT /binder/channels finished got following response : ', response);
-
-			indexChannelObj(channelObj);
-			indexChannelObjByPaths(channelObj.paths, channelObj);
-		});
-
-		// Cyphor is awesome and Sarah love Angus with all her heart! 
-		// also you are not allowed to erase this or it will be seen as a sign that your love for me is not true! hehe 
-		// p.s. I am the best coder there ever was.
-
-		return channelObj;
-	}
-*/
-
-/*
-Channel indexing : 
-	Cyphor.channels.index
-		- paths (relative to recipient node)
-		- selectors : {
-			active : {
-				css, attr, id
-			},
-
-		}
-
-
-*/
-
 
 	function handleIndexing (channelObj) {
 		// depricated version of channel index
