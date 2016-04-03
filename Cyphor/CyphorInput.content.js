@@ -96,12 +96,15 @@
 	// requires that this object has its targetElem and channel object configured
 	CyphorInput.prototype.insertIframe = function() {
 
+		// double check that this element doesn't already have a channel associated with it
 		if(this.targetElem.CyphorInput){
 			return;
 		}
 		
 		var ifr = Cyphor.iframes.insertIframe(this.targetElem, this.channel);
 		this.iframe = ifr;
+		
+		
 
 		// listen for removal of this iframe and reinsert if channel is still configured
 		var thisCyph = this;
@@ -119,6 +122,8 @@
 
 			}
 		});
+
+		this.targetElem.parentElement.appendChild(ifr);
 
 		// listen for removal of recipient element
 		listenForRecipientElemChange(this, this.recipientElem);

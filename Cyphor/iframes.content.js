@@ -303,7 +303,7 @@
 		if(targetElem.CyphorInput){
 			return;
 		}
-		//@TODO : this whole already exists thing will break if you have multiple iframes for the same channel on one page
+
 		// check if cyphorInput Obj already exists
 		var existing = iframeMod.list.filter(function (cyphorInputObj) {
 			return cyphorInputObj.channel == channelObj;
@@ -311,7 +311,8 @@
 		
 		if(existing && existing.length){
 			existing[0].targetElem = targetElem;
-			existing[0].insertIframe(targetElem);
+			existing[0].recipientElem = elemsObj.recipient_elem
+			existing[0].insertIframe();
 		} else {
 			//var coords = getCoords(targetElem)
 			//var insertedFrame = insertIframe(targetElem);

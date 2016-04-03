@@ -40,11 +40,12 @@
 			
 			index.remove.forEach(function (listener, ind) {
 				// check if the mutation target is the listener target... this is the case when innerText of an element changes
-				if(listener.target == mutRec.target || (mutRec.target.contains && mutRec.target.contains(listener.target))){
-					listener.listener.call(listener.target, mutRec);
-					// automatically clear the remove listeners
-					index.remove.splice(ind, 1);
-				} else {
+				// could also use thisCyph.iframe.ownerDocument.contains(thisCyph.iframe) to see if the iframe no longer exists in the document
+				// if(listener.target == mutRec.target || (mutRec.target.contains && mutRec.target.contains(listener.target))){
+				// 	listener.listener.call(listener.target, mutRec);
+				// 	// automatically clear the remove listeners
+				// 	index.remove.splice(ind, 1);
+				// } else {
 					Array.prototype.forEach.call(mutRec.removedNodes, function (removedNode) {
 						if(listener.target == removedNode || (removedNode.contains && removedNode.contains(listener.target))){
 							listener.listener.call(listener.target, mutRec);
@@ -57,7 +58,7 @@
 							index.remove.splice(ind, 1);
 						}
 					});
-				}
+				// }
 			});
 /*
 			Array.prototype.forEach.call(mutRec.removedNodes, function (removedNode) {

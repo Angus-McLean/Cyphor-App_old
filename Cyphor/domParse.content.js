@@ -178,7 +178,12 @@
 			}
 			queryStr = queryStr.replace(/, $/,'');
 
-			var activeElems = (queryStr && queryStr != '') ? node.querySelectorAll(queryStr) : [];
+			var activeElems = []
+			try{
+				activeElems = (queryStr && queryStr != '') ? node.querySelectorAll(queryStr) : [];
+			} catch(e){
+				console.error('parseNodeForActiveInputs failed to query due to invalid querySelectorAll string.', e);
+			}
 
 			if(activeElems.length){
 				// iterate array of possible active inputs to see if they're are currently in an active channel
