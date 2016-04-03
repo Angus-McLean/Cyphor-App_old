@@ -33,11 +33,103 @@
 	var channelObj = {};
 
 	function initSaveChannel () {
-		window.Cyphor.channels.tempChannel = {};
-		state = 'RECIPIENT';
+		var tempChannel = {};
+		window.Cyphor.channels.tempChannel = tempChannel;
+		// state = 'RECIPIENT';
 		addGreyOverlay();
+
+		// prevent user click from passing through
+		document.body.addEventInterceptor('keyup', prevent);
+		document.body.addEventInterceptor('keypress', prevent);
+		// add escape listener
+		document.body.addEventInterceptor('keydown', function (eve) {
+			if(eve.keycode == 27){
+				// remove overlay
+				removeGreyOverlay();
+				
+				// reset tempChannel
+				window.Cyphor.channels.tempChannel = {};
+				
+				// remove all interceptors
+				document.body.removeEventInterceptor('mousedown', true);
+				document.body.removeEventInterceptor('mouseup', true);
+				document.body.removeEventInterceptor('click', true);
+				document.body.removeEventInterceptor('keydown', true);
+
+				// prevent propagation
+				return prevent(eve)
+			}
+		});
+
+
+
+		// prevent user click from passing through
+		document.body.addEventInterceptor('mouseup', prevent);
+		document.body.addEventInterceptor('click', prevent);
+		// add click interceptor
+		document.body.addEventInterceptor('mousedown', function (eve) {
+			// log recipient
+			if(!tempChannel.recipient_elem){
+				if(eve.target.innerText && eve.target.innerText != ''){
+					tempChannel.recipient_elem = eve.target;
+					prevent(eve);
+				}
+			} else if(!tempChannel.clicked_elem){
+				// watch for click to editable element
+				if(eve.target){
+					tempChannel.clicked_elem = eve.target;
+
+					// let this event pass through and remove other input interceptors
+					document.body.removeEventInterceptor('mousedown', true);
+					document.body.removeEventInterceptor('mouseup', true);
+					document.body.removeEventInterceptor('click', true);
+
+					// listen for removal of clicked element(ie linkedin)
+					CyphorObserver.on('remove', tempChannel.clicked_elem, function (mutationRecord) {
+						//@TODO : set up so that it handle characterData too
+						if(mutationRecord.type == 'childList'){
+							// element was removed or changed.. check if its a configured channel
+							tempChannel.parent_elem = mutationRecord.target;
+						}
+					});
+
+					setTimeout(function () {
+						// wait for all events to propagate in target page..
+						// get active element
+						tempChannel.active_elem = document.activeElement;
+
+						// assume that if that element was going to be removed it would be removed by now
+						CyphorObserver.removeObserver(tempChannel.clicked_elem);
+
+						// set the editable element
+						if(tempChannel.parent_elem){
+							tempChannel.editable_elem = tempChannel.active_elem;
+						} else {
+							tempChannel.editable_elem = tempChannel.clicked_elem;
+						}
+						
+						// save and create channel
+						var savedChannelObj = saveChannelObj(eve);
+						Cyphor.iframes.create(Cyphor.channels.tempChannel, savedChannelObj);
+
+						state = null;
+						removeGreyOverlay();
+					}, 5);
+				}
+			}
+
+		});
+
+
 	}
 
+	function prevent (eve) {
+		eve.stopPropagation();
+		eve.preventDefault();			
+		return false;
+	}
+
+/*
 	// track important html elements when saving a channel
 	function logChannelElems (eve) {
 		if(state == 'RECIPIENT'){
@@ -59,7 +151,7 @@
 
 				if(!document.contains(Cyphor.channels.tempChannel.editable_elem) && Cyphor.channels.tempChannel.editable_elem.style.display != 'none'){
 					// the clicked element was probably some kind of input box prompt.. which is now gone
-					window.Cyphor.channels.tempChannel.editable_elem = document.activeElement;;
+					window.Cyphor.channels.tempChannel.editable_elem = document.activeElement;
 				}
 				
 				var savedChannelObj = saveChannelObj(eve);
@@ -71,6 +163,7 @@
 			}, 0);
 		}
 	}
+*/
 
 	function buildPathObj (eve, tempChannel) {
 		var recipElem = tempChannel.recipient_elem;
@@ -303,17 +396,17 @@ Channel indexing :
 
 
 	// Window Event Listeners
-	window.addEventListener('click', logChannelElems, true);
-	window.addEventListener('keydown', function (eve) {
-		if(eve.keycode == 27 && state != null){
-			removeGreyOverlay();
-			window.Cyphor.channels.tempChannel = {};
-			state = null;
-			eve.stopPropagation()
-			eve.preventDefault();
-			return false;
-		}
-	}, true);
+	// window.addEventListener('click', logChannelElems, true);
+	// window.addEventListener('keydown', function (eve) {
+	// 	if(eve.keycode == 27 && state != null){
+	// 		removeGreyOverlay();
+	// 		window.Cyphor.channels.tempChannel = {};
+	// 		state = null;
+	// 		eve.stopPropagation()
+	// 		eve.preventDefault();
+	// 		return false;
+	// 	}
+	// }, true);
 
 	chrome.runtime.onMessage.addListener(function (msgObj) {
 		if(msgObj.action == 'BROWSER_ACTION'){
