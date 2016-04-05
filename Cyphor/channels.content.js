@@ -43,7 +43,7 @@
 		document.body.addEventInterceptor('keypress', prevent);
 		// add escape listener
 		document.body.addEventInterceptor('keydown', function (eve) {
-			if(eve.keycode == 27){
+			if(eve.keyCode == 27){
 				// remove overlay
 				removeGreyOverlay();
 				

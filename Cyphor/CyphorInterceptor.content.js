@@ -18,7 +18,7 @@
 				// if any of the functions return something (ie false) this method should also return false
 				var returnVal;
 				interceptors[eventName].forEach(function (intercp) {
-					if(intercp.element.contains && intercp.element.contains(event.target)){
+					if(intercp.element == event.target || (intercp.element.contains && intercp.element.contains(event.target))){
 						returnVal = (returnVal !== undefined) ? returnVal : intercp.interceptor.call(eveCont, event);
 					}
 				});
@@ -39,7 +39,7 @@
 		var elemCont = this;
 		interceptors[eventName].forEach(function (interceptorObj, ind) {
 			if(elemCont ==  interceptorObj.element && (interceptorObj.interceptor == fn || fn === true)){
-				interceptors.splice(ind, 1);
+				interceptors[eventName].splice(ind, 1);
 			}
 		});
 	}
