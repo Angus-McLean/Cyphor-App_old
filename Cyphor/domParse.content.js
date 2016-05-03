@@ -110,13 +110,17 @@
 	// get a selector pattern that queries the correct element even when there were some modifications too it
 	function getClassSelector (elem) {
 		var eleQuery = '';
-		eleQuery += (elem.attributes.class && elem.attributes.class.value) ? '.'+elem.attributes.class.value.split(' ').join('.') : '';
+		// account for element being of type node and has no attributes property
+		eleQuery += (elem.attributes && elem.attributes.class && elem.attributes.class.value) ? '.'+elem.attributes.class.value.split(' ').join('.') : '';
 		return (eleQuery!='') ? elem.tagName + ' ' + eleQuery : null;
 	}
 
 	function getAttrSelector (elem) {
 		var avoid = ['class', 'style'];
 		var eleQuery = '';
+		if(!elem.attributes){
+			return null;
+		}
 		Array.prototype.forEach.call(elem.attributes, function (attr) {
 			if(avoid.indexOf(attr.name) == -1){
 				eleQuery += (attr.value) ? ('['+attr.name+'="'+attr.value.replace(/"/g,'\\"')+'"]') : '';

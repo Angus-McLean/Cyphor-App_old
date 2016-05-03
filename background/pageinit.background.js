@@ -7,14 +7,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	
 	if(request.action == 'MESSAGE'){
 		Cyphor.background.sendMouseEvents(sender.tab.id, request.coords);
-		Cyphor.background.sendText(sender.tab.id, request.message);
+		setTimeout(function () {
+			Cyphor.background.sendText(sender.tab.id, request.message);
+			sendResponse({success : true, response : 'received'});
+		},1000)
+		
 	} else if(request.action == 'SUBMIT_BUTTON'){
 		Cyphor.background.sendMouseEvents(sender.tab.id, request.inputCoords);
 		Cyphor.background.sendText(sender.tab.id, request.inputText);
 		Cyphor.background.sendMouseEvents(sender.tab.id, request.buttonCoords);
 	}
 	
-	sendResponse({success : true, response : 'received'});
+	//sendResponse({success : true, response : 'received'});
 
 	return true;
 });

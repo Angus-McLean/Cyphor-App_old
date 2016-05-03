@@ -71,13 +71,22 @@
 			// log recipient
 			if(!tempChannel.recipient_elem){
 				if(eve.target.innerText && eve.target.innerText != ''){
-					tempChannel.recipient_elem = eve.target;
+					// account for cases where the event target is of type Node and not Element
+					// if(eve.target instanceof Node){
+					// 	tempChannel.recipient_elem = eve.target.parentElement;
+					// } else {
+						tempChannel.recipient_elem = eve.target;
+					// }
 					prevent(eve);
 				}
 			} else if(!tempChannel.clicked_elem){
 				// watch for click to editable element
 				if(eve.target){
-					tempChannel.clicked_elem = eve.target;
+					// if(eve.target instanceof Node){
+					// 	tempChannel.clicked_elem = eve.target.parentElement;
+					// } else {
+						tempChannel.clicked_elem = eve.target;
+					// }
 
 					// let this event pass through and remove other input interceptors
 					document.body.removeEventInterceptor('mousedown', true);
@@ -114,7 +123,7 @@
 
 						state = null;
 						removeGreyOverlay();
-					}, 5);
+					}, 300);
 				}
 			}
 
@@ -129,65 +138,60 @@
 		return false;
 	}
 
-/*
-	// track important html elements when saving a channel
-	function logChannelElems (eve) {
-		if(state == 'RECIPIENT'){
-
-			window.Cyphor.channels.tempChannel.recipient_elem = eve.target;
-			state = 'EDITABLE';
-
-			eve.preventDefault();
-			eve.stopPropagation();
-
-			return false;
-
-		} else if(state == 'EDITABLE'){
-			window.Cyphor.channels.tempChannel.editable_elem = eve.target;
-			//state = 'ACTIVE';
-			state = null;
-
-			setTimeout(function () {
-
-				if(!document.contains(Cyphor.channels.tempChannel.editable_elem) && Cyphor.channels.tempChannel.editable_elem.style.display != 'none'){
-					// the clicked element was probably some kind of input box prompt.. which is now gone
-					window.Cyphor.channels.tempChannel.editable_elem = document.activeElement;
-				}
-				
-				var savedChannelObj = saveChannelObj(eve);
-
-				Cyphor.iframes.create(Cyphor.channels.tempChannel, savedChannelObj);
-
-				state = null;
-				removeGreyOverlay();
-			}, 0);
-		}
-	}
-*/
-
 	function buildPathObj (eve, tempChannel) {
 		var recipElem = tempChannel.recipient_elem;
 
 		// account for iframes
 		var parentDocument = (document.activeElement.nodeName == 'IFRAME') ? document.activeElement.contentDocument : document;
 
-		var paths = {
-			editable : Cyphor.dom.getFullPath(tempChannel.editable_elem).replace(/ > /g,'\u0000> ').split('\u0000'),
-			editable_recipient : Cyphor.dom.buildPath(tempChannel.editable_elem, recipElem),
-			recipient_editable : Cyphor.dom.buildPath(recipElem, tempChannel.editable_elem),
-			
-			active : Cyphor.dom.getFullPath(parentDocument.activeElement).replace(/ > /g,'\u0000> ').split('\u0000'),
-			active_recipient : Cyphor.dom.buildPath(parentDocument.activeElement, recipElem),
-			recipient_active : Cyphor.dom.buildPath(recipElem, parentDocument.activeElement),
-			
-			selection : Cyphor.dom.getFullPath(parentDocument.getSelection().baseNode).replace(/ > /g,'\u0000> ').split('\u0000'),
-			selection_recipient : Cyphor.dom.buildPath(parentDocument.getSelection().baseNode, recipElem),
-			recipient_selection : Cyphor.dom.buildPath(recipElem, parentDocument.getSelection().baseNode),
-			
-			clicked : Cyphor.dom.getFullPath(eve.target).replace(/ > /g,'\u0000> ').split('\u0000'),
-			clicked_recipient : Cyphor.dom.buildPath(eve.target, recipElem),
-			recipient_clicked : Cyphor.dom.buildPath(recipElem , eve.target),
+		var paths = {};
+
+		if(!tempChannel.recipient_elem.ownerDocument.contains(tempChannel.recipient_elem)){
+			console.error('Recipient Element is no longer in the document');
 		}
+
+		// add editable / recipient paths.. check to make sure it hasn't been removed from the document
+		if(tempChannel.editable_elem.ownerDocument.contains(tempChannel.editable_elem)){
+			paths.editable = Cyphor.dom.getFullPath(tempChannel.editable_elem).replace(/ > /g,'\u0000> ').split('\u0000');
+			paths.editable_recipient = Cyphor.dom.buildPath(tempChannel.editable_elem, recipElem);
+			paths.recipient_editable = Cyphor.dom.buildPath(recipElem, tempChannel.editable_elem);
+		}
+
+		// assume active Element is always in the document
+		paths.active = Cyphor.dom.getFullPath(parentDocument.activeElement).replace(/ > /g,'\u0000> ').split('\u0000');
+		paths.active_recipient = Cyphor.dom.buildPath(parentDocument.activeElement, recipElem);
+		paths.recipient_active = Cyphor.dom.buildPath(recipElem, parentDocument.activeElement);
+
+		// check that baseNode is not null
+		if(parentDocument.getSelection().baseNode){
+			paths.selection = Cyphor.dom.getFullPath(parentDocument.getSelection().baseNode).replace(/ > /g,'\u0000> ').split('\u0000');
+			paths.selection_recipient = Cyphor.dom.buildPath(parentDocument.getSelection().baseNode, recipElem);
+			paths.recipient_selection = Cyphor.dom.buildPath(recipElem, parentDocument.getSelection().baseNode);
+		}
+
+		if(tempChannel.clicked_elem.ownerDocument.contains(tempChannel.clicked_elem)){
+			paths.clicked = Cyphor.dom.getFullPath(tempChannel.clicked_elem).replace(/ > /g,'\u0000> ').split('\u0000');
+			paths.clicked_recipient = Cyphor.dom.buildPath(tempChannel.clicked_elem, recipElem);
+			paths.recipient_clicked = Cyphor.dom.buildPath(recipElem , tempChannel.clicked_elem);
+		}
+
+		// var paths = {
+		// 	editable : Cyphor.dom.getFullPath(tempChannel.editable_elem).replace(/ > /g,'\u0000> ').split('\u0000'),
+		// 	editable_recipient : Cyphor.dom.buildPath(tempChannel.editable_elem, recipElem),
+		// 	recipient_editable : Cyphor.dom.buildPath(recipElem, tempChannel.editable_elem),
+			
+		// 	active : Cyphor.dom.getFullPath(parentDocument.activeElement).replace(/ > /g,'\u0000> ').split('\u0000'),
+		// 	active_recipient : Cyphor.dom.buildPath(parentDocument.activeElement, recipElem),
+		// 	recipient_active : Cyphor.dom.buildPath(recipElem, parentDocument.activeElement),
+			
+		// 	selection : Cyphor.dom.getFullPath(parentDocument.getSelection().baseNode).replace(/ > /g,'\u0000> ').split('\u0000'),
+		// 	selection_recipient : Cyphor.dom.buildPath(parentDocument.getSelection().baseNode, recipElem),
+		// 	recipient_selection : Cyphor.dom.buildPath(recipElem, parentDocument.getSelection().baseNode),
+			
+		// 	clicked : Cyphor.dom.getFullPath(tempChannel.clicked_elem).replace(/ > /g,'\u0000> ').split('\u0000'),
+		// 	clicked_recipient : Cyphor.dom.buildPath(tempChannel.clicked_elem, recipElem),
+		// 	recipient_clicked : Cyphor.dom.buildPath(recipElem , tempChannel.clicked_elem),
+		// }
 		return paths;
 	}
 

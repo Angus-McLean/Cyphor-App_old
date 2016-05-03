@@ -60,6 +60,9 @@
 		sourceFrameObj.iframe.style.display = 'none';
 		sourceFrameObj.targetElem.style.display = '';
 
+		sourceFrameObj.targetElem.focus();
+		console.log('content focused on target elem.', document.activeElement);
+
 		messageObj.coords = getCoords(sourceFrameObj.targetElem);
 
 		// send message to background so it can be typed

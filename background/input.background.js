@@ -7,10 +7,10 @@ function sendMouseEvents (tabId, coords) {
 	var mouseMove = {type : 'mouseMoved', x : coords.x,y : coords.y, timestamp : Date.now()};
 	chrome.debugger.sendCommand({ tabId: tabId },'Input.dispatchMouseEvent',mouseMove);
 	
-	var mouseDown = {type : 'mousePressed', x : coords.x,y : coords.y, timestamp : Date.now(), button : 0, clickCount : 1};
+	var mouseDown = {type : 'mousePressed', x : coords.x,y : coords.y, timestamp : Date.now(), button : 'left', clickCount : 1};
 	chrome.debugger.sendCommand({ tabId: tabId },'Input.dispatchMouseEvent', mouseDown);
 
-	var mouseUp = {type : 'mouseReleased', x : coords.x,y : coords.y, timestamp : Date.now(), button : 0, clickCount : 1};
+	var mouseUp = {type : 'mouseReleased', x : coords.x,y : coords.y, timestamp : Date.now(), button : 'left', clickCount : 1};
 	chrome.debugger.sendCommand({ tabId: tabId },'Input.dispatchMouseEvent', mouseUp);
 
 	chrome.debugger.detach({ tabId: tabId });
