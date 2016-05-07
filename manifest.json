@@ -36,6 +36,9 @@
 	"permissions": [
 		"tabs", "http://*/*", "activeTab", "debugger"
 	],
+	"web_accessible_resources": [
+		"iframe/div.iframe.html"
+	],
 	"browser_action": {
 		"default_title": "TEST_APP"
 	},
