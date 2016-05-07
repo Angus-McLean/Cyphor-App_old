@@ -5,6 +5,7 @@
 		remove : [],
 		insert : []
 	};
+	wind.ObserverIndex = index;
 
 	function processMutation (mutRec) {
 		var _elemContext = this;
@@ -97,7 +98,7 @@
 	function on (eventName, target, fn) {
 		// validate parameters
 		if(Object.keys(index).indexOf(eventName) == -1 || (!target || (typeof target != 'string' && !(target instanceof Element) && typeof target != 'function')) || typeof fn != 'function'){
-			throw 'invalid parameters for cyphor mutation event listener';
+			console.error('invalid parameters for cyphor mutation event listener');
 		}
 
 		index[eventName].push({
@@ -107,13 +108,17 @@
 		});
 	}
 
-	function removeListener (eventName, listener) {
-		
+	function removeListener (eventName, elem) {
+		index[eventName].forEach(function (listener, ind) {
+			if(listener.target == elem){
+				index[eventName].splice(ind, 1);
+			}
+		});
 	}
 
 	function addObserver (element, fn) {
 		if(!element || !fn){
-			throw 'invalid parameters for cyphor mutation observer';
+			console.error('invalid parameters for cyphor mutation observer');
 		}
 		listeners.push({
 			target : element,
@@ -133,7 +138,8 @@
 	wind.CyphorObserver = {
 		on : on,
 		observe : addObserver,
-		removeObserver : removeObserver
+		removeObserver : removeObserver,
+		removeListener : removeListener
 	};
 
 })(window);

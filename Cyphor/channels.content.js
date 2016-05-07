@@ -55,6 +55,8 @@
 				document.body.removeEventInterceptor('mouseup', true);
 				document.body.removeEventInterceptor('click', true);
 				document.body.removeEventInterceptor('keydown', true);
+				document.body.removeEventInterceptor('keyup', true);
+				document.body.removeEventInterceptor('keypress', true);
 
 				// prevent propagation
 				return prevent(eve)
@@ -93,6 +95,10 @@
 					document.body.removeEventInterceptor('mouseup', true);
 					document.body.removeEventInterceptor('click', true);
 
+					document.body.removeEventInterceptor('keydown', true);
+					document.body.removeEventInterceptor('keyup', true);
+					document.body.removeEventInterceptor('keypress', true);
+
 					// listen for removal of clicked element(ie linkedin)
 					CyphorObserver.on('remove', tempChannel.clicked_elem, function (mutationRecord) {
 						//@TODO : set up so that it handle characterData too
@@ -108,7 +114,7 @@
 						tempChannel.active_elem = document.activeElement;
 
 						// assume that if that element was going to be removed it would be removed by now
-						CyphorObserver.removeObserver(tempChannel.clicked_elem);
+						CyphorObserver.removeListener('remove', tempChannel.clicked_elem);
 
 						// set the editable element
 						if(tempChannel.parent_elem){
@@ -241,6 +247,8 @@
 			selectors : buildSelectors(eve, t)
 		};
 
+		handleIndexing(channelObj);
+
 		var requestObj = {
 			action : 'binder',
 			method : 'PUT',
@@ -250,10 +258,9 @@
 
 		console.log('Saving Channel Obj : ', requestObj);
 
+
 		chrome.runtime.sendMessage(requestObj, function(response) {
 			console.log('PUT /binder/channels finished got following response : ', response);
-
-			handleIndexing(channelObj);
 
 		});
 

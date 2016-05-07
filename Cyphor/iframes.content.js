@@ -67,20 +67,19 @@
 
 		// send message to background so it can be typed
 		chrome.runtime.sendMessage(null, messageObj, null, function () {
-			console.log('received response from background, sent iframe message', arguments);
-
-			// finished typing
-		
+			console.log('received response from background, sent iframe message', arguments);		
 			
+			// reset display of iframe
 			if(sourceFrameObj.targetElem){
 				sourceFrameObj.targetElem.style.display = 'none';
 			}			
-			if(sourceFrameObj.iframe){
+			if(document.contains(sourceFrameObj.iframe)){
 				console.log('Setting back iframe display')
 				sourceFrameObj.iframe.style.display = '';
-			}			
+			}
 			sourceFrameObj.isTyping = false;
 			
+			// refocus on iframe once displaying
 			setTimeout(function () {
 				if(sourceFrameObj.iframe && sourceFrameObj.iframe.contentWindow){
 					sourceFrameObj.iframe.focus();
@@ -314,7 +313,8 @@
 		
 		if(existing && existing.length){
 			existing[0].targetElem = targetElem;
-			existing[0].recipientElem = elemsObj.recipient_elem
+			existing[0].recipientElem = elemsObj.recipient_elem || existing[0].recipientElem;
+			existing[0].listenForRecipientElemChange();
 			existing[0].insertIframe();
 		} else {
 			//var coords = getCoords(targetElem)

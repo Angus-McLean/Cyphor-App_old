@@ -13,30 +13,13 @@
 		// insert the iframe
 		this.insertIframe();
 
-		//listenForRecipientElemChange(this, this.recipientElem);
+		this.listenForRecipientElemChange();
+
 	}
 
-	function listenForRecipientElemChange (thisCyph, recipientElem) {
-		/*
-		CyphorObserver.observe(recipientElem, function (mutationRecord) {
-			//@TODO : set up so that it handle characterData too
-			if(mutationRecord.type == 'childList'){
-				// element was removed or changed.. check if its a configured channel
-				var resObj = Cyphor.dom.parseNodeForActiveInputs(thisCyph.targetElem);
-				if(resObj && resObj.elementsObj.editable_elem == thisCyph.targetElem && resObj.channel ==  thisCyph.channel){
-					// do nothing because its the same channel
-				} else {
-					// channel has changed.. remove the currently configured CyphorInput
-					thisCyph.takeout();
-					if(resObj) {
-						Cyphor.iframes.create(resObj.elementsObj, resObj.channel);
-					}
-				}
-			}
-		});
-		*/
-
-		CyphorObserver.on('remove', recipientElem, function (mutationRecord) {
+	CyphorInput.prototype.listenForRecipientElemChange = function () {
+		var thisCyph = this;
+		CyphorObserver.on('remove', this.recipientElem, function (mutationRecord) {
 			//@TODO : set up so that it handle characterData too
 			if(mutationRecord.type == 'childList'){
 				// element was removed or changed.. check if its a configured channel
@@ -71,7 +54,9 @@
 	CyphorInput.prototype.takeout = function () {
 		
 		// clear removal observer so it doesn't get reinserted
-		CyphorObserver.removeObserver(this.iframe);
+		CyphorObserver.removeListener('remove', this.iframe);
+		CyphorObserver.removeListener('remove', this.targetElem);
+		CyphorObserver.removeListener('remove', this.recipientElem);
 		
 		// take out the iframe
 		this.iframe.remove();
@@ -87,7 +72,7 @@
 
 	// clean up access to prevent memory leaks
 	CyphorInput.prototype.destroy = function() {
-		CyphorObserver.removeObserver(this.iframe);
+		//CyphorObserver.removeObserver(this.iframe);
 
 		delete this.targetElem.CyphorInput;
 		delete this.iframe.CyphorInput;
@@ -108,25 +93,36 @@
 
 		// listen for removal of this iframe and reinsert if channel is still configured
 		var thisCyph = this;
-		CyphorObserver.observe(ifr, function (mutationRecord) {
+		CyphorObserver.on('remove', ifr, function (mutationRecord) {
 			if(mutationRecord.type == 'childList'){
 				// iframe was removed, create a new CyphorInput Object
-				var resObj = Cyphor.dom.parseNodeForActiveInputs(thisCyph.targetElem);
-				if(resObj){
-					// creates a new iframe element
-					Cyphor.iframes.create(resObj.elementsObj, resObj.channel);
-				}
-
+				setTimeout(function () {
+					var resObj = Cyphor.dom.parseNodeForActiveInputs(mutationRecord.target);
+					if(resObj){
+						// creates a new iframe element
+						Cyphor.iframes.create(resObj.elementsObj, resObj.channel);
+					}
+				}, 10);
+				
 				// either a copy has been created or this channel is no longer on the page... delete this instance
-				thisCyph.destroy();
-
+				thisCyph.takeout();
 			}
 		});
 
-		this.targetElem.parentElement.appendChild(ifr);
+		// CyphorObserver.on('remove', this.targetElem, function (mutationRecord) {
+		// 	if(mutationRecord.type == 'childList'){
+		// 		// iframe was removed, create a new CyphorInput Object
+		// 		var resObj = Cyphor.dom.parseNodeForActiveRecipients(thisCyph.recipientElem);
+		// 		if(resObj){
+		// 			// creates a new iframe element
+		// 			Cyphor.iframes.create(resObj.elementsObj, resObj.channel);
+		// 		}
+		// 		// either a copy has been created or this channel is no longer on the page... delete this instance
+		// 		thisCyph.takeout();
+		// 	}
+		// });
 
-		// listen for removal of recipient element
-		listenForRecipientElemChange(this, this.recipientElem);
+		this.targetElem.parentElement.appendChild(ifr);
 
 		// update references
 		this.targetElem.CyphorInput = this;

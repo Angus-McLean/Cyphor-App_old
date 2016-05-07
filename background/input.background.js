@@ -32,7 +32,7 @@ function sendText (destTabId, textStr) {
 		typeShort(destTabId, textStr.slice(i,i+chunkSize));
 	}
 
-	chrome.debugger.sendCommand({ tabId: destTabId }, 'Input.dispatchKeyEvent', { type: 'keyDown', windowsVirtualKeyCode:13, nativeVirtualKeyCode : 13, macCharCode: 13  });
+	chrome.debugger.sendCommand({ tabId: destTabId }, 'Input.dispatchKeyEvent', { type: 'keyDown', windowsVirtualKeyCode:13, nativeVirtualKeyCode : 13, macCharCode: 13  });			//@TESTING : turn on and off automatically pressing enter
 	//chrome.debugger.sendCommand({ tabId: destTabId }, 'Input.dispatchKeyEvent', { type: 'keyUp', windowsVirtualKeyCode:13, nativeVirtualKeyCode : 13, macCharCode: 13  });
 
 	chrome.debugger.detach({ tabId: destTabId });
