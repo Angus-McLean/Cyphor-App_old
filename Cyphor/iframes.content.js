@@ -23,7 +23,7 @@
 		var frameMessageEvent = e;
 		var key = e.message ? "message" : "data";
 		var data = e[key];
-		if(e.origin == 'https://www.cyphor.io'){
+		if(e.origin == 'https://www.cyphor.io' || new RegExp('chrome-extension:\/\/'+ chrome.runtime.id + '$').test(e.origin)) {
 
 			
 			console.log('iframe message :', e);
@@ -158,7 +158,7 @@
 		iframe.style.border = "0px none transparent";
 		iframe.style.padding = "0px";
 
-		iframe.src = "https://www.cyphor.io/iframe/div.iframe.html";
+		iframe.src = chrome.runtime.getURL('iframe/div.iframe.html');
 		siblingElem.parentElement.appendChild(iframe);
 
 		iframe.onload = function () {
