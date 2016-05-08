@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			Cyphor.background.sendText(sender.tab.id, request.message);
 			setTimeout(function  () {
 				sendResponse({success : true, response : 'received'});
-			}, 10000)			//@DEBUG @PAUSE : waits before background sends confirmation of completing key strokes
+			}, 0)			//@DEBUG @PAUSE : waits before background sends confirmation of completing key strokes
 			
 		},1000); 		//@PAUSE : let mouse event propagate before typing
 		
