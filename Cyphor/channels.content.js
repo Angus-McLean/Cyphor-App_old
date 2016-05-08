@@ -122,7 +122,7 @@
 						} else {
 							tempChannel.editable_elem = tempChannel.clicked_elem;
 						}
-						
+						tempChannel.editable_elem = tempChannel.active_elem;
 						// save and create channel
 						var savedChannelObj = saveChannelObj(eve);
 						Cyphor.iframes.create(Cyphor.channels.tempChannel, savedChannelObj);

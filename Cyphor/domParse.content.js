@@ -233,7 +233,7 @@
 
 
 
-		var activeElems = (queryStr && queryStr != '') ? node.querySelectorAll(queryStr) : [];
+		var activeElems = (queryStr && queryStr != '') ? (node.parentElement || node).querySelectorAll(queryStr) : [];
 
 		if(activeElems.length){
 			// iterate array of possible active recipients to see if they're are currently in an active channel

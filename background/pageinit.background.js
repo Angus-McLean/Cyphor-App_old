@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				sendResponse({success : true, response : 'received'});
 			}, 0)			//@DEBUG @PAUSE : waits before background sends confirmation of completing key strokes
 			
-		},1000); 		//@PAUSE : let mouse event propagate before typing
+		},500); 		//@PAUSE : let mouse event propagate before typing
 		
 	} else if(request.action == 'SUBMIT_BUTTON'){
 		Cyphor.background.sendMouseEvents(sender.tab.id, request.inputCoords);

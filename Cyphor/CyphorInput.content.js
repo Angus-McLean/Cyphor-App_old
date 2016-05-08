@@ -36,6 +36,18 @@
 			}
 		});
 
+		// CyphorObserver.on('remove', this.targetElem, function (mutationRecord) {
+		// 	//@TODO : set up so that it handle characterData too
+		// 	if(mutationRecord.type == 'childList'){
+		// 		// element was removed or changed.. check if its a configured channel
+				
+		// 		thisCyph.takeout();
+		// 		var resObj = Cyphor.dom.parseNodeForActiveRecipients(thisCyph.recipientElem);
+		// 		if(resObj) {
+		// 			Cyphor.iframes.create(resObj.elementsObj, resObj.channel);
+		// 		}
+		// 	}
+		// });
 	}
 
 	function getCoords (elem) {
