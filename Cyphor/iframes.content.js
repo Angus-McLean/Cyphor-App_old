@@ -152,8 +152,8 @@
 		iframe.allowtransparency = "true";
 		iframe.frameborder = "0";
 		iframe.scrolling = "no";
-		iframe.style.width = parStyleJSON.width;
-		iframe.style.height = parStyleJSON.height;
+		iframe.style.width = targetStyleJSON.width;
+		iframe.style.height = targetStyleJSON.height;
 		iframe.style.overflow = "hidden";
 		iframe.style.border = "0px none transparent";
 		iframe.style.padding = "0px";
