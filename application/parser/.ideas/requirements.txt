@@ -1,0 +1,42 @@
+Major portions :
+	- Handling the input iframe
+		- Hide the native input
+		- Duplicate input formatting
+		- Insert the iframe
+		- Smoothly Remove iframe
+			- Unhide the native input element
+		- Watch for DOM changes
+			- Removal of channel name
+			- Removal of input
+	- UX inside the iframe
+		- Cyphor logo
+		- Hotkeys
+			-
+		- Allow for send buttons to be configured
+	- Parse and find channels
+		- Consistently find a path between 2 elements
+			(or just be able to consistently identify the same element)
+			- Could possibly use calculated style of elements.. so even if class names and path changes the element will probably look the same as it always did
+		- Be able to quickly travers from one element across a path to another Element
+	- Encrypt and Decrypt messages
+		- Libraries for encrypting and decrypting messages
+	- Simulate user input
+		- Use background to simulate input
+		- Intercept event listeners + clone event objects
+	- Message routing and Syncing
+		- Message Routing between CyphorContext and iFrames
+			(communicate changes in settings, )
+
+
+Cyphor Messaging Requirements :
+	- Tabs / CyphorContext
+		- Initializing a CyphorInput iframe
+		- Changes to channel settings
+			(server -> background)
+			(background -> context(s))
+				- emits to all
+			(background -> iframes)
+		- User clicks send button (context -> iframe)
+			- iframe needs to respond (trigger onetime callback) with encrypted data so that CyphorInput can paste and send click event
+		- User presses enter in iframe
+			- emit submit event

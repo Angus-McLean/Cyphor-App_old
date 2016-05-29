@@ -1,0 +1,73 @@
+
+ --- Cyphor Extension Notes : ---
+"Cyphor keeps your messages and information private anywhere and everywhere on the internet"
+
+Modules : 
+	- Channels (static)
+	- CyphorInput (Class)
+	- CyphorInterceptor (Element prototype)
+	- CyphorObserver (static)
+	- Decrypt (static)
+	- DomParsing (static)
+	- iframes (static)
+	- pageinit
+	- quickcrypt
+
+Channels : 
+	- Handles creating new channels
+		- Adds click listeners, grey overlay etc
+		- User clicks elements
+	- Channel Indexing
+		- Stores various indexes
+	- Builds / Saves Channel Objects
+		- Parses paths
+		- Saves to server
+
+CyphorInput : 
+	- prototype : 
+		- takeout ()
+			Gracefully removes Element from DOM + calls destroy
+		- destroy ()
+			Clears up references to element and deletes listeners
+		- insertIframe ()
+			Inserts the iframe + handles removal observers
+		- addSendButton (Element)
+			Adds event listeners to the button element
+		- configureSendButton
+			Adds grey overlay, handles user click for picking the send button element
+
+CyphorInterceptor : 
+	- stores interceptors
+	- Element prototype methods
+	- addEventInterceptor (eventName, fn)
+		Adds interceptor to Element
+	- removeEventInterceptor (eventName, fn)
+		Removes interceptor.. 
+		if(fn==true) removes all listeners from Element
+
+Decrypt : 
+	- Contains message regex
+	- decryptNodeTree (Element)
+		Decrypts all Elements inside this tree
+	- decryptFromString (str)
+		Decrypts the passed message string
+	- mutationObserver
+		watches for all insertion events and parses for encrypted strings
+		** this function could probably be optimized
+
+DomParsing
+	- traverPath (start, path)
+		traverses the path and returns the destination element
+	- buildPath (start, end)
+		Travels from start to finish and returns the path array
+	- getContainingElemPath (parent, target)
+		builds the querySelector string for one level
+	- getFullPath (Element)
+		builds an absolutely querySelector string (uses id of a parent element)
+	- getClassSelector (Element)
+		Builds query String based on classes in Element
+	- getAttrSelector (Element)
+		Builds query String based on Attres in Element
+	- getBaseTextNode
+		Parses inwards looking for element that contains a regex 
+	- 
