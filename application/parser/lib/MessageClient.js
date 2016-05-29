@@ -86,6 +86,7 @@ MessageClient.prototype.request = function (roomName, messageObject, cb) {
 MessageClient.prototype.send = function (roomName, messageObject, config) {
 
 	var bubbleTo = (messageObject._destination && messageObject._destination.bubbleTo) || (config && config._destination && config._destination.bubbleTo) || 0;
+	var sendFunction = (config && config._destination && config._destination.sendFunction) || (typeof config == 'function' && config);
 
 	if(!messageObject._destination) {
 		messageObject._destination = {};
@@ -94,7 +95,11 @@ MessageClient.prototype.send = function (roomName, messageObject, config) {
 	messageObject._destination.room = roomName;
 	messageObject._destination.bubbleTo = bubbleTo;
 
-	this.processMessage(messageObject);
+	if(sendFunction) {
+		sendFunction(messageObject);
+	} else {
+		this.processMessage(messageObject);
+	}
 };
 
 MessageClient.prototype.processMessage = function (messageObject) {

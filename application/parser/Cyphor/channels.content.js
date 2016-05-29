@@ -1,11 +1,11 @@
 // channels.content.js
 
-(function () {
-	
+(function (wind) {
+
 	console.log('channel.content.js');
 
-	// define channels module : 
-	window.Cyphor.channels = {
+	// define channels module :
+	wind.Cyphor.channels = {
 		build : initSaveChannel,
 		addToIndex : indexChannelObj,
 		index : {
@@ -46,10 +46,10 @@
 			if(eve.keyCode == 27){
 				// remove overlay
 				removeGreyOverlay();
-				
+
 				// reset tempChannel
 				window.Cyphor.channels.tempChannel = {};
-				
+
 				// remove all interceptors
 				document.body.removeEventInterceptor('mousedown', true);
 				document.body.removeEventInterceptor('mouseup', true);
@@ -140,7 +140,7 @@
 
 	function prevent (eve) {
 		eve.stopPropagation();
-		eve.preventDefault();			
+		eve.preventDefault();
 		return false;
 	}
 
@@ -185,15 +185,15 @@
 		// 	editable : Cyphor.dom.getFullPath(tempChannel.editable_elem).replace(/ > /g,'\u0000> ').split('\u0000'),
 		// 	editable_recipient : Cyphor.dom.buildPath(tempChannel.editable_elem, recipElem),
 		// 	recipient_editable : Cyphor.dom.buildPath(recipElem, tempChannel.editable_elem),
-			
+
 		// 	active : Cyphor.dom.getFullPath(parentDocument.activeElement).replace(/ > /g,'\u0000> ').split('\u0000'),
 		// 	active_recipient : Cyphor.dom.buildPath(parentDocument.activeElement, recipElem),
 		// 	recipient_active : Cyphor.dom.buildPath(recipElem, parentDocument.activeElement),
-			
+
 		// 	selection : Cyphor.dom.getFullPath(parentDocument.getSelection().baseNode).replace(/ > /g,'\u0000> ').split('\u0000'),
 		// 	selection_recipient : Cyphor.dom.buildPath(parentDocument.getSelection().baseNode, recipElem),
 		// 	recipient_selection : Cyphor.dom.buildPath(recipElem, parentDocument.getSelection().baseNode),
-			
+
 		// 	clicked : Cyphor.dom.getFullPath(tempChannel.clicked_elem).replace(/ > /g,'\u0000> ').split('\u0000'),
 		// 	clicked_recipient : Cyphor.dom.buildPath(tempChannel.clicked_elem, recipElem),
 		// 	recipient_clicked : Cyphor.dom.buildPath(recipElem , tempChannel.clicked_elem),
@@ -366,10 +366,16 @@
 	// 	}
 	// }, true);
 
+	wind.CyphorMessageClient.room('PARSE_CHANNEL').on('init', function (msg) {
+		initSaveChannel();
+	});
+
 	chrome.runtime.onMessage.addListener(function (msgObj) {
 		if(msgObj.action == 'BROWSER_ACTION'){
 			initSaveChannel();
 		}
 	})
 
-})();
+
+
+})(window);
