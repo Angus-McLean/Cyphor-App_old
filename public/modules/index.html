@@ -10,16 +10,16 @@
         <title>Cyphor</title>
 
         <!-- jQuery Core JS -->
-        <script type="text/javascript" src="/public/lib/jquery/jquery-1.11.3.js"></script>
+        <script type="text/javascript" src="/public/bower_components/jquery/dist/jquery.min.js"></script>
         <!-- jQuery Plugin JavaScript -->
-        <script src="/public/js/pages/jquery.easing.min.js"></script>
+        <script src="/public/lib/jquery.easing.min.js"></script>
 
         <!-- Bootstrap Core CSS / JS-->
         <link href="/public/lib/bootstrap.css" rel="stylesheet">
-        <script src="/public/js/pages/bootstrap.min.js"></script>
+        <script src="/public/lib/bootstrap.min.js"></script>
 
         <!-- Custom CSS -->
-        <link href="/public/lib/grayscale.css" rel="stylesheet">
+        <link href="/public/css/grayscale.css" rel="stylesheet">
 
         <!-- Custom Fonts -->
         <link href="/public/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -28,12 +28,14 @@
 
         <!--Angular libraries -->
 
-        <script src="/public/lib/angular/angular.min.js"></script>
-        <script src="/public/lib/angular/angular-animate.js"></script>
-        <script src="/public/lib/angular/angular.ui.bootstrap.js"></script>
+        <script src="/public/bower_components/angular/angular.min.js"></script>
+        <script src="/public/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+        <script src="/public/bower_components/angular-ui-router-css/angular-ui-router-css.min.js"></script>
+        <script src="/public/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 
         <!-- Custom Theme JavaScript -->
-        <script src="/public/js/pages/grayscale.js"></script>
+        <script src="/public/js/grayscale.js"></script>
+
 
 
 
@@ -41,57 +43,45 @@
         <script type="text/javascript" src="/public/config.js"></script>
         <script type="text/javascript" src="/public/application.js"></script>
         
-
-        <!-- Services -->
-        <script type="text/javascript" src="/public/modules/core/services/gtp.client.service.js"></script>
-        <script type="text/javascript" src="/public/modules/core/services/chromeMessage.client.service.js"></script>
-        <script type="text/javascript" src="/public/modules/core/services/CyphorModels.client.service.js"></script>
-
-        <!-- Directives -->
-        <script type="text/javascript" src="/public/modules/core/directives/binder.client.directive.js"></script> 
-
-
-        <!-- Core -->
-        <script type="text/javascript" src="/public/modules/core/core.client.module.js"></script>
-        <script type="text/javascript" src="/public/modules/core/controllers/core.client.controller.js"></script>
-
+        <!-- Core Services -->
+        <script type="text/javascript" src="/public/modules/core/core.module.js"></script>
+        <script type="text/javascript" src="/public/modules/core/services/chromeMsg.service.js"></script>
 
         <!-- Users -->
-        <script type="text/javascript" src="/public/modules/users/users.client.module.js"></script>
-        <script type="text/javascript" src="/public/modules/users/controllers/users.client.controller.js"></script>
+        <script type="text/javascript" src="/public/modules/users/users.module.js"></script>
+        <script type="text/javascript" src="/public/modules/users/userAuth.controller.js"></script>
+
+        <!-- User Services -->
+        <script type="text/javascript" src="/public/modules/users/AuthService.service.js"></script>
+        <script type="text/javascript" src="/public/modules/users/Session.service.js"></script>
         
+        <!-- Navigation -->
+        <script type="text/javascript" src="/public/modules/navigation/navigation.module.js"></script>
+        <script type="text/javascript" src="/public/modules/navigation/navigation.controller.js"></script>
+        <script type="text/javascript" src="/public/modules/navigation/navigation.constants.js"></script>
+        
+        
+        
+
         <!-- Channels -->
-        <script type="text/javascript" src="/public/modules/channels/channels.client.module.js"></script>
-        <script type="text/javascript" src="/public/modules/channels/directives/channelGroup.client.directive.js"></script>
-        <script type="text/javascript" src="/public/modules/channels/controllers/channelsPage.client.controller.js"></script>
+        <script type="text/javascript" src="/public/modules/channels/channels.module.js"></script>
+        <!-- <script type="text/javascript" src="/public/modules/channels/directives/channelGroup.client.directive.js"></script> -->
+        <script type="text/javascript" src="/public/modules/channels/controllers/channelsConfig.controller.js"></script> 
+        <script type="text/javascript" src="/public/modules/channels/controllers/channelsCtrl.controller.js"></script>
 
 
         
 
     </head>
-    <body ng-app="cyphor" ng-controller="MainCtrl">
+    <body ng-app="cyphor">
         
-        <div ng-include="'/public/modules/core/views/header.client.view.html'"></div>
-        
-        <!-- User Profile View -->
-        <div ng-include="'/public/modules/users/views/users.client.view.html'" ng-show="activeTab=='profile'"></div>
 
-        <!-- DashBoard View -->
-        <div ng-include="'/public/modules/core/views/header.client.view.html'" ng-show="activeTab=='dashboard'"></div>
+        <div ng-include="'/public/modules/navigation/views/header.client.view.html'"></div>
 
-        <!-- Messages View -->
-        <div ng-include="'/public/modules/core/views/header.client.view.html'" ng-show="activeTab=='messages'"></div>
+        <header class="intro app-content">
+            <div class="intro-body" ui-view></div>
+        </header>
 
-        <!-- Channels View -->
-        <div ng-include="'/public/modules/channels/views/channels.client.view.html'" ng-show="activeTab=='channels'"></div>
-
-        <div bind-down="/users/me | user"></div>
     </body>
-
-    <!-- Bootstrap Core JavaScript -->
-    
-
-
-
 
 </html>
