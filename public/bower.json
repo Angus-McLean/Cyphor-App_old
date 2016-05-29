@@ -1,0 +1,25 @@
+{
+  "name": "Cyphor",
+  "homepage": "http://www.cyphor.io",
+  "description": "\"description\": \"Enabling users to control their privacy anywhere online\",",
+  "main": "",
+  "moduleType": [],
+  "authors": [
+    "Angus McLean"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-router": "^0.2.17",
+    "jquery": "^2.2.0",
+    "angular-ui-router-css": "*",
+    "angular-bootstrap": "^1.1.2"
+  }
+}

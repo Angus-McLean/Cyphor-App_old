@@ -1,13 +1,13 @@
 //manifest.json
 
 {
-	"name": "CryptoLayer",
+	"name": "Cyphor",
 	"description": "Bringing seamless information privacy to all your messaging applications",
 	"version": "0.0.0.1",
 	"manifest_version": 2,
 
 	"icons": {
-		"128": "test_icon.png"
+		"128": "/public/img/cyphor_logo_48.png"
 	},
 	"background": {
 		"persistent": true,
@@ -47,28 +47,10 @@
 		}
 	],
 	"permissions": [
-		"tabs", "http://*/*", "activeTab", "storage"
+		"tabs", "http://*/*", "activeTab", "storage", "debugger"
 	],
-	"commands": {
-		"encryptSelection": {
-			"suggested_key": {
-				"default": "Alt+A",
-				"mac": "Command+Shift+Y" 
-			},
-			"description" : "test"
-		},
-		"decryptSelection": {
-			"suggested_key": {
-				"default": "Alt+D",
-				"windows": "Alt+D",
-				"mac": "Alt+D"
-			},
-			"description" : "test"
-		}
-	},
 	"browser_action": {
-		"default_title": "CryptoLayer!",
+		"default_title": "Cyphor",
 		"default_popup": "public/modules/index.html"
-	},
-	"options_page" : "public/html/options.html"
+	}
 }

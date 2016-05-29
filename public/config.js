@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'cyphor';
-	var applicationModuleVendorDependencies = [];
+	var applicationModuleVendorDependencies = ['navigation', 'core'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
