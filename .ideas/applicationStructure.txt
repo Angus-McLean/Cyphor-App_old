@@ -1,0 +1,76 @@
+Modules Structure :
+
+	- CyphorEvents (Inject into client page)
+		- Intercept addEventListener
+		- Listen for Cyphor Communicated Events
+			- Build up Copy-Paste Event
+			- Send Copy-Paste Event from Cyphor-Context
+				- This event is then cloned at each event listener
+		- CloneObject Function
+			- Add some middleware to modify values of CloneObject
+
+	- CyphorInput Object
+		- Properties :
+			- iframe
+			- original input element (targetElem)
+			- channel object
+			- recipient element
+		- Functions :
+			- insertIframe
+			- takeout
+			- destroy
+			- addSendButton
+		- MessageClient
+			- Easily route messages between framecontext and CyphorContext
+
+	- CyphorInterceptor :
+		-
+
+	- Inside Iframe
+		- Build duplicate DOM elements
+		- Pull channel settings from Cyphor-Context
+			- Use chrome-message passing
+		- Accept user input (input)
+		- Encrypt text and send message
+		- MessageClient
+			- Subscribe to changes to channel's settings
+			- Subscribe to user clicks send button
+				-
+
+
+
+Cyphor MessageClient :
+	- Shared prototype of all MessageClients on a particular page
+		- Receives all incoming chrome.runtime messages
+			- chrome.runtime.onmessage -> this.digest({messageObjectHere})
+		- Exposes an 'on' function which adds that messageClient to a shared hidden list of listeners
+			- Remove listener also
+	- Instantiated MessageClient:
+		(basically a wrapper around chrome.runtime)
+		- Can subscribe to rooms
+			- examples of rooms : [
+				<username>/<channelid>/settings, 		-- changes in settings on that channel
+				<username>/settings,					-- changes in settings for the user (color scheme)
+				<username>/<channelid>/<instanceid>		-- changes / messages to that particular instance of cyphorInput
+			]
+				- So incoming messages to those rooms get routed to this particular message client
+			- These rooms get bubbled up (background or server) so it can add this tab to the endpoint routing object
+		- Routes all messages through background page
+			- Outgoing messages take mandatory endpoints
+			- Optional limit parameter
+				- Number of steps upwards to send message
+					- 0 dispatches to all listeners on it's own MessageClient eg listeners within the iframe
+					- 1 bubbles once.. so would be sent to all MessageClients on current page ()
+					- 2 bubbles twice.. so hits all pages on Machine
+					- 3.. bubbles to server
+			- Can send data to server or background
+			- Send messages to CyphorInputObject in CyphorContext
+		- Can subscribe to particular events
+
+	- Background :
+		- Routes messages between Server, Background, Tabs, and iframes
+
+
+How messages are routed :
+	- Get sent to :
+		- background
